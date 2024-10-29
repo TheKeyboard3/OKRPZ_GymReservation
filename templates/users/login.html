@@ -46,12 +46,6 @@
                             placeholder="Введіть ваш пароль" 
                             required>
                     </div>
-                    <div class="form-floating mt-3">
-                        {{ form.captcha }}
-                        {% if form.captcha.errors %}
-                            <div class="alert alert-danger alert-dismissible fade show">{{ form.captcha.errors }}</div>
-                        {% endif %}
-                    </div>
                     <button class="w-100 btn btn-lg btn-primary mt-3" type="submit">Увійти</button>
                 </form>
 
