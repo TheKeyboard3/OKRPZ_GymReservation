@@ -231,12 +231,12 @@ class ProfileDetailView(DetailView):
 
     def get(self, request: HttpRequest, username):
         user = get_object_or_404(User, username=username)
-        total_followers = user.profile.followers.count()
-        followers = user.profile.followers.all()
+        #total_followers = user.profile.followers.count()
+        #followers = user.profile.followers.all()
         context = {
             'title': user.username,
             'detail_user': user,
-            'total_followers': total_followers,
-            'followers': followers,
+            #'total_followers': total_followers,
+            #'followers': followers,
         }
         return render(request, 'users/user_detail.html', context)
