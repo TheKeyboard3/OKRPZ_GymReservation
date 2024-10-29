@@ -1,0 +1,89 @@
+/* * {
+    outline: 1px solid red !important;
+} */
+
+html,
+body {
+    background-image:
+        linear-gradient(to bottom,
+            rgba(165, 153, 153, 0.6),
+            rgba(0, 0, 0, 0.6)),
+        url('../images/background.png');
+    background-color: rgb(185, 185, 185);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    height: 100%;
+}
+
+body div.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main.main {
+    margin-top: 56px;
+    flex: 1 1 auto;
+}
+
+.notifications-container {
+    top: 56px;
+}
+
+header {
+    margin-bottom: 0 !important;
+}
+
+footer {
+    background-color: aliceblue;
+}
+
+main {
+    min-height: 100%;
+}
+
+.captcha {
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.form-success {
+    color: green;
+    transition: all ease-in 0.2s;
+}
+
+.form-error {
+    color: red;
+    transition: all ease-in 0.2s;
+}
+
+.ck-content::selection {
+    background: #bcd6ff;
+}
+
+.ck-content::-moz-selection {
+    background: #ffb7b7;
+}
+
+.block-or .line {
+    display: inline-block;
+    width: 40%;
+    position: relative;
+}
+
+.block-or span {
+    background-color: white;
+    position: relative;
+    top: -15px;
+    margin: 0 2%;
+    vertical-align: middle;
+}
+
+a.comments-count {
+    text-decoration: none;
+}

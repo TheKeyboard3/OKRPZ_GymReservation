@@ -1,0 +1,64 @@
+{% load static cache %}
+
+<!DOCTYPE html>
+<html lang="uk" prefix="og: //ogp.me/ns#">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/post-card.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/post-detail.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/ck-content.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/popup-text.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/prism.css' %}" />
+    <script async charset="utf-8" src="{% static 'js/ck/embed-platform.js' %}"></script>
+
+    {% block css %}
+    {% endblock %}
+
+    {% block title %}
+        <title>
+            {% if title %}
+                {{ title }} - {{ site_main_title }}
+            {% else %}
+                {{ site_main_title }}
+            {% endif %}
+        </title>
+    {% endblock %}
+</head>
+
+<body>
+    <div class="wrapper">
+        {% include '_header.html' %}
+
+        <main class="main">
+            {% include '_notifications.html' %}
+
+            <div class="container">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </main>
+
+        {% include '_footer.html' %}
+    </div>
+
+    <script src="{% static 'js/prism.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'js/ck/embedly-card.js' %}"></script>
+    <script src="{% static 'js/htmx.min.js' %}"></script>
+    <script src="{% static 'js/htmx-ws.js' %}"></script>
+    <script src="{% static 'js/base.js' %}"></script>
+    
+    {% block script %}
+    {% endblock %}
+</body>
+
+</html>

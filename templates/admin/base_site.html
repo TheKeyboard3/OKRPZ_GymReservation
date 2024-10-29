@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+    Адмін панель - {{ site_main_title }}
+    {% comment %} 
+        {% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}
+    {% endcomment %}
+{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">{{ site_main_title }}</a>
+        {% comment %} 
+            {{ site_header|default:_('Django administration') }}
+        {% endcomment %}
+    </h1>
+    {% if user.is_anonymous %}
+        {% include "admin/color_theme_toggle.html" %}
+    {% endif %}
+{% endblock %}
+
+{% block nav-global %}
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Тестові функції (Frontend) - {{ site_main_title }}</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="bg-white p-4 mt-5 mb-5 rounded">
+    <h2>{{ title }}</h2>
+    <p class="mb-1">Backend ядро цього вебсайту це Django {{ dj_version }}</p>
+    <p>Нижче наведені тестові htmx шаблони для реалізаці різних функцій на сайті.</p>
+    <hr>
+    <button class="btn btn-danger"
+            hx-get="/api/v1/generate-key"
+            hx-trigger="click" 
+            hx-target="#key-gen"
+            onclick="hidePopup()">
+        Згенерувати
+    </button>
+
+    <div class="popup btn btn-success text-white ml-2" 
+        onclick="copyToClipboardAndShowPopup()">
+        <text id="key-gen">NONE</text>
+        <span class="popuptext" id="myPopup">Скопійовано!</span>
+    </div>
+    <hr>
+    {% if sinoptic %}
+        {% include 'main/_sinoptik_informer.html' %}
+        <hr>
+    {% endif %}
+    
+    </div>
+    <hr>
+    <div class="mt-3 bg-light" 
+        hx-get="/api/v1/datetime" 
+        hx-trigger="click[ctrlKey]">
+        Ctrl + LeftClick Me
+    </div>
+    <hr>
+    <div class="mt-3 bg-light" 
+        hx-get="/api/v1/datetime/seconds/" 
+        hx-trigger="load every 60s" 
+        hx-target=".sec">
+        Секунди: <a class="sec"></a>
+    </div>
+    <hr>
+    <h4>Створити публікації</h4>
+    <form action="{% url 'api:post_fake' %}" method="POST">
+        {% csrf_token %}
+        <input class="form-control mr-sm-2"
+            name="count" 
+            value="1"
+            type="number"
+            size="26"
+            placeholder="Кількість">
+        <button class="btn btn-success right" type="submit">Створити</button>
+    </form>
+    <hr>
+    <h4>Надіслати Email</h4>
+    <div>
+        <label>Email отримувача</label>
+        <input class="form-control mr-sm-2"
+            name="email"
+            value="jrvadim22@gmail.com"
+            type="text"
+            placeholder="Email">
+        <button class="btn btn-warning"
+            hx-get="/send-email"
+            hx-target="#send-email-status"
+            hx-include="[name='email']">
+            Надіслати
+        </button>
+        <div id="send-email-status" class="mt-2"></div>
+    </div>
+    <hr>
+    <h4>Валідація</h4>
+    <div>
+        <label>Перевірити ім'я користувача</label>
+        <input hx-get="/api/v1/users/check_username/" 
+            hx-trigger="keyup changed" 
+            hx-target="#check-username" 
+            name="username"
+            class="form-control mr-sm-2" 
+            type="text" 
+            placeholder="Перевірити username">
+        <div id="check-username" class="mt-2"></div>
+    </div>
+    <hr>
+    <h4>Модальне вікно JS</h4>
+    <button class="btn"
+        hx-post="/api/v1/datetime/"
+        hx-prompt="Введіть текст (HX-Prompt)"
+        hx-confirm="Ви впевнені?"
+        hx-target="#response">Prompt Submission</button>
+    <div id="response"></div>
+    <hr>
+    <h4>Модальне вікно</h4>
+    <button class="btn btn-primary" 
+        hx-get="/api/v1/htmx-modal" 
+        hx-target="#modals-here" 
+        hx-trigger="click" 
+        data-bs-toggle="modal" 
+        data-bs-target="#modals-here">Open Modal</button>
+    <div id="modals-here"
+        class="modal modal-blur fade"
+        style="display: none"
+        aria-hidden="false"
+        tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+    <hr>
+    <div id="tabs" hx-target="#tab-contents" role="tablist"
+        hx-on:htmx:after-on-load="let currentTab = document.querySelector('[aria-selected=true]');
+                                currentTab.setAttribute('aria-selected', 'false')
+                                currentTab.classList.remove('selected')
+                                let newTab = event.target
+                                newTab.setAttribute('aria-selected', 'true')
+                                newTab.classList.add('selected')">
+        <button role="tab" aria-controls="tab-contents" aria-selected="true" hx-get="/api/v1/tabs/1" class="selected">Tab 1</button>
+        <button role="tab" aria-controls="tab-contents" aria-selected="false" hx-get="/api/v1/tabs/2">Tab 2</button>
+        <button role="tab" aria-controls="tab-contents" aria-selected="false" hx-get="/api/v1/tabs/3">Tab 3</button>
+    </div>
+    <div id="tab-contents" class="mt-3" role="tabpanel" hx-get="/api/v1/tabs/1" hx-trigger="load"></div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+    function copyToClipboardAndShowPopup() {
+        var copyText = document.getElementById("key-gen").innerText;
+        navigator.clipboard.writeText(copyText);
+        togglePopup();
+    }
+
+    function togglePopup() {
+        var popup = document.getElementById("myPopup");
+        popup.classList.toggle("show");
+    }
+
+    function hidePopup() {
+        var popup = document.getElementById("myPopup");
+        popup.classList.remove("show");
+    }
+</script>
+
+{% endblock %}
