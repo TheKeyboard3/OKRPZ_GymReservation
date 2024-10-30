@@ -36,7 +36,7 @@ class User(AbstractUser):
         if hasattr(self, 'trainer_profile'):
             return self.trainer_profile
 
-        return null;
+        return None
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
