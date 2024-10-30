@@ -3,7 +3,7 @@
 <header>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="{% url 'main:index' %}">
-            <img src="{% static 'favicon.ico' %}" 
+            <img src="{% static 'favicons/favicon.ico' %}" 
                 width="30" height="30" 
                 class="d-inline-block align-top mr-2" 
                 alt="{{ site_main_title }}">
@@ -27,10 +27,6 @@
                         <a href="{% url 'users:login' %}{% if request.path != '/register/' and request.path != '/login/'  %}?next={{ request.path }}{% endif %}" 
                             class="nav-link px-2 link-body-emphasis">
                             Увійти</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'users:register' %}" class="nav-link px-2 link-body-emphasis">
-                            Реєстрація</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
@@ -58,9 +54,6 @@
                                         ({{ user.username }})
                                     {% endif %}</a>
                             </li>
-                            <li><a href="{% url 'users:profile' %}"
-                                class="dropdown-item">
-                                Налаштування</a></li>
                             <hr class="dropdown-divider">
                             <li><a href="{% url 'user:logout' %}?next={{ request.path }}"
                                 class="dropdown-item" >
@@ -69,31 +62,6 @@
                     </li>
 
                     {% if user.is_staff %}
-                        <li class="nav-item dropdown mega-menu-item">
-                            <a class="nav-link dropdown-toggle" 
-                                href="" 
-                                id="navbarDarkDropdownMenuLink" 
-                                role="button" 
-                                data-bs-toggle="dropdown" 
-                                aria-expanded="false">
-                                Функції
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDarkDropdownMenuLink">
-                                <li><a href="{% url 'main:htmx_examples' %}" 
-                                    class="dropdown-item">
-                                    HTMX</a>
-                                </li>
-                                <li><a href="{% url 'main:test_func' %}"
-                                    class="dropdown-item">
-                                    Різне</a>
-                                </li>
-                                <hr class="dropdown-divider">
-                                <li><a href="{% url 'docs' %}"
-                                    class="dropdown-item">
-                                    Api Docs</a>
-                                </li>
-                            </ul>
-                        </li>
                         <li class="nav-item">
                             <a href="{% url 'admin:index' %}" 
                                 class="nav-link px-2 link-body-emphasis"
@@ -103,19 +71,6 @@
                     {% endif %}
                 {% endif %}
             </ul>
-
-            <form class="form-inline mt-2 mt-md-0" role="search" action="/search" method="GET">
-                <input 
-                    value="{{ request.GET.q }}"
-                    name="q"
-                    class="form-control mr-sm-2" 
-                    type="text" 
-                    placeholder="Пошук... ;(" 
-                    aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" 
-                    type="submit" 
-                    hidden>Знайти</button>
-            </form>
         </div>
     </nav>
 </header>

@@ -11,50 +11,8 @@ from main.tasks import send_email
 from main.services import create_image
 from users.tasks import clear_user_token
 from .models import User
-from .forms import UserEditForm, ClientProfileEditForm, UserLoginForm, UserRegisterForm, ResetTokenForm, ResetPasswordForm, SetNewPasswordForm
+from .forms import UserEditForm, ClientProfileEditForm, UserLoginForm, ResetTokenForm, ResetPasswordForm, SetNewPasswordForm
 from .services import generate_token
-
-
-class UserRegisterView(FormView):
-    template_name = 'users/register.html'
-    form_class = UserRegisterForm
-    success_url = reverse_lazy('user:reset_wait')
-
-    def form_valid(self, form: UserRegisterForm):
-
-        email = form.cleaned_data['email']
-        user, created = User.objects.get_or_create(email=email)
-
-        if created or not user.is_active:
-            token = generate_token()
-            activation_url = self.request.build_absolute_uri(
-                reverse_lazy('user:register_confirm', kwargs={'token': token}))
-
-            send_email.delay(
-                to=email,
-                subject=f'Код активації акаунта ({APP_NAME})',
-                html_message=f"""
-                    <h2>Код активації акаунта ({APP_NAME})</h2>
-                    <p>Код: <b>{token}</b></p>
-                    <p>або перейдіть за посиланням <a href="{activation_url}">{activation_url}</a></p>""",
-                message=f'({APP_NAME}) Код активації акаунта: {token}')
-
-            user.is_active = False
-            user.activation_key = token
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
-            user.username = form.cleaned_data['username']
-            user.set_password(form.cleaned_data['password1'])
-            user.save()
-
-            clear_user_token.apply_async((user.pk,), countdown=TOKEN_LIFETIME)
-
-        messages.success(self.request,
-                         'На ваш email надіслано лист з посиланням для підтвердження акаунта')
-        return super().form_valid(form)
-
-    def form_invalid(self, form: UserRegisterForm):
-        return self.render_to_response(self.get_context_data(form=form))
 
 
 class UserLoginView(LoginView):

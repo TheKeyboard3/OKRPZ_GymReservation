@@ -1,4 +1,4 @@
-from django.db.models import Model, BooleanField, CharField, TextField, ImageField, EmailField, OneToOneField, CASCADE
+from django.db.models import Model, BooleanField, CharField, TextField, ImageField, EmailField, OneToOneField, ManyToManyField, CASCADE
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
@@ -36,12 +36,12 @@ class User(AbstractUser):
         if hasattr(self, 'trainer_profile'):
             return self.trainer_profile
 
-        return null;
+        return None
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
-    
+
     objects = UserManager()
     clients = UserClientManager()
     trainers = UserTrainerManager()
@@ -66,7 +66,7 @@ class Client(User):
         proxy = True
         verbose_name = 'Клієнт'
         verbose_name_plural = 'Клієнти'
-    
+
     def get_absolute_url(self):
         return reverse('user:detail', args=[self.username])
 
@@ -76,7 +76,7 @@ class Trainer(User):
         proxy = True
         verbose_name = 'Тренер'
         verbose_name_plural = 'Тренери'
-    
+
     def get_absolute_url(self):
         return reverse('booking:detail', args=[self.id])
 
@@ -119,6 +119,9 @@ class TrainerProfile(Model):
                                     blank=True, null=True)
     avatar = ImageField('Фото профілю', upload_to=avatar_path,
                         blank=True, null=True)
+    departaments = ManyToManyField('booking.Departament', blank=True, 
+                                   related_name='trainers',
+                                   verbose_name='Відділення у яких працює тренер')
 
     class Meta():
         db_table = 'trainer_profiles'

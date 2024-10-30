@@ -15,36 +15,6 @@ class UserLoginForm(AuthenticationForm):
     password = CharField()
 
 
-class UserRegisterForm(UserCreationForm):
-    first_name = CharField()
-    last_name = CharField(required=False)
-    username = CharField()
-    email = EmailField()
-    password1 = CharField()
-    password2 = CharField()
-    captcha = ReCaptchaField()
-
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = (
-            'first_name',
-            'last_name',
-            'username',
-            'email',
-            'password1',
-            'password2',
-            'captcha'
-        )
-
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exists():
-            raise ValidationError(
-                'Користувач з таким адресом e-mail уже існує.\nЯкщо Ви забули пароль, натисніть "Забули пароль?"'
-            )
-        return email
-
-
 class UserEditForm(UserChangeForm):
     first_name = CharField()
     last_name = CharField(required=False)
