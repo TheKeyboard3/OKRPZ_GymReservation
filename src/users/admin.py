@@ -25,9 +25,9 @@ class TrainerProfileInline(admin.StackedInline):
     filter_horizontal = ('departaments',)
     fields = [
         'avatar',
-        'phone_number',
+        'departaments',
         'bio',
-        'departaments'
+        'phone_number'
     ]
     formfield_overrides = {
         ImageField: {'widget': ImageUploaderWidget}
