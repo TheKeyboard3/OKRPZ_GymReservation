@@ -29,6 +29,15 @@ class User(AbstractUser):
                             help_text='Чи є користувач адміністратором')
     activation_key = CharField('Код', max_length=80, blank=True, null=True)
 
+    @property
+    def profile(self):
+        if hasattr(self, 'client_profile'):
+            return self.client_profile
+        if hasattr(self, 'trainer_profile'):
+            return self.trainer_profile
+
+        return null;
+
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -81,7 +90,7 @@ class Admin(User):
 
 class ClientProfile(Model):
     """Профіль клієнта."""
-    
+
     user = OneToOneField(User, on_delete=CASCADE,
                          related_name='client_profile', verbose_name='Профіль клієнта')
     avatar = ImageField('Фото профілю', upload_to=avatar_path,
@@ -102,7 +111,7 @@ class ClientProfile(Model):
 
 class TrainerProfile(Model):
     """Профіль тренера."""
-    
+
     user = OneToOneField(User, on_delete=CASCADE,
                          related_name='trainer_profile', verbose_name='Профіль тренера')
     bio = TextField('Опис', blank=True, null=True)

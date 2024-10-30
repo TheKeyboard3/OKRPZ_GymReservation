@@ -13,7 +13,6 @@ from datetime import date
 class UserLoginForm(AuthenticationForm):
     username = CharField()
     password = CharField()
-    captcha = ReCaptchaField()
 
 
 class UserRegisterForm(UserCreationForm):

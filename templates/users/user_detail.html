@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <img class="rounded-circle" 
-                        src="{% if detail_user.profile.avatar %}{% detail_user.profile.avatar %}{% else %}{% static 'images/baseavatar.jpg' %}{% endif %}"
+                        src="{% if detail_user.profile.avatar %}{{ detail_user.profile.avatar }}{% else %}{% static 'images/baseavatar.jpg' %}{% endif %}"
                         class="img-thumbnail rounded-0"
                         alt="Avatar image" 
                         width="250" height="250"
