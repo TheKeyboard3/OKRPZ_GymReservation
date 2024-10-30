@@ -22,10 +22,12 @@ class ClientProfileInline(admin.StackedInline):
 class TrainerProfileInline(admin.StackedInline):
     model = TrainerProfile
     can_delete = False
+    filter_horizontal = ('departaments',)
     fields = [
         'avatar',
         'phone_number',
-        'bio'
+        'bio',
+        'departaments'
     ]
     formfield_overrides = {
         ImageField: {'widget': ImageUploaderWidget}
@@ -138,7 +140,7 @@ class TrainerAdmin(admin.ModelAdmin):
         ('password', 'username'),
         ('first_name', 'last_name'),
         ('email', 'is_active'),
-        ('last_login', 'date_joined')
+        ('last_login', 'date_joined'),
     ]
 
     def display_avatar(self, obj: Trainer):

@@ -1,12 +1,11 @@
 {% load static cache %}
 
 <!DOCTYPE html>
-<html lang="uk" prefix="og: //ogp.me/ns#">
+<html lang="uk">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script async charset="utf-8" src="{% static 'js/ck/embed-platform.js' %}"></script>
 
     {% block css %}
     {% endblock %}
@@ -31,7 +30,6 @@
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/jquery.validate.min.js' %}"></script>
-    <script src="{% static 'js/ck/embedly-card.js' %}"></script>
     <script src="{% static 'js/htmx.min.js' %}"></script>
     <script src="{% static 'js/htmx-ws.js' %}"></script>
     <script src="{% static 'js/base.js' %}"></script>
