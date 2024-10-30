@@ -54,9 +54,6 @@
                                         ({{ user.username }})
                                     {% endif %}</a>
                             </li>
-                            <li><a href="{% url 'users:profile' %}"
-                                class="dropdown-item">
-                                Налаштування</a></li>
                             <hr class="dropdown-divider">
                             <li><a href="{% url 'user:logout' %}?next={{ request.path }}"
                                 class="dropdown-item" >
@@ -74,19 +71,6 @@
                     {% endif %}
                 {% endif %}
             </ul>
-
-            <form class="form-inline mt-2 mt-md-0" role="search" action="/search" method="GET">
-                <input 
-                    value="{{ request.GET.q }}"
-                    name="q"
-                    class="form-control mr-sm-2" 
-                    type="text" 
-                    placeholder="Пошук... ;(" 
-                    aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" 
-                    type="submit" 
-                    hidden>Знайти</button>
-            </form>
         </div>
     </nav>
 </header>
