@@ -78,7 +78,7 @@ class Trainer(User):
         verbose_name_plural = 'Тренери'
     
     def get_absolute_url(self):
-        return reverse('booking:detail', args=[self.username])
+        return reverse('booking:detail', args=[self.id])
 
 
 class Admin(User):

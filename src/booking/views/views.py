@@ -38,7 +38,7 @@ class TrainersListView(View):
 class TrainerDetailView(DetailView):
 
     def get(self, request, id):
-        trainer = get_object_or_404(TrainerProfile, id=id)
+        trainer = get_object_or_404(TrainerProfile, user__id=id)
 
         context = {
             'title': trainer.user.username,
