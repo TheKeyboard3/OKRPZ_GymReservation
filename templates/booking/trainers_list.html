@@ -39,13 +39,13 @@
 {% endblock %}
 
 {% block title %}
-    <title>Забронювати час тренера - {{ site_main_title }}</title>
+    <title>Наші тренери - {{ site_main_title }}</title>
 {% endblock %}
 
 {% block content %}
 
 <header class="page-header">
-    <a href="index.html" class="logo">
+    <a href="{% url 'main:index' %}" class="logo">
         <img
             src="{% static 'img/logo.png' %}"
             alt=""
