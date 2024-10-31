@@ -87,7 +87,9 @@
                         {% else %}
                             src="{% static 'images/not_found_image.png' %}"
                         {% endif %}
-                        alt="{{ trainer.user.get_full_name }}" class="trainer__image"
+                        alt="{{ trainer.user.get_full_name }}" class="trainer__img"
+                        height="300"
+                        width="280"
                         href="{% url 'booking:detail' trainer.id %}">
                     <h2 class="trainer__name" href="{% url 'booking:detail' trainer.user.id %}">{{ trainer.user.get_full_name }}</h2>
                     <a class = "trainer__show-more" href="{% url 'booking:detail' trainer.user.id %}">ПОКАЗАТИ</a>
