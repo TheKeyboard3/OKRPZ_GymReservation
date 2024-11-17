@@ -14,7 +14,7 @@ class CreateReservationForm(Form):
         cleaned_data = super().clean()
         trainer = User.objects.filter(
             trainer_profile__isnull=False).get(id=cleaned_data['trainer_id'])
-        
+
         start_date: datetime = cleaned_data.get('start_date')
         end_date: datetime = cleaned_data.get('end_date')
 
@@ -41,5 +41,23 @@ class CreateReservationForm(Form):
             if end_date.minute % 15 != 0:
                 self.add_error('end_date',
                                f'Час кінця має бути кратним {MAX_RESERVATION_TIME} хвилинам!')
+
+        return cleaned_data
+
+
+class CreateWorkSheduleForm(Form):
+    trainer_id = IntegerField(required=True)
+    start_date = DateTimeField(required=True)
+    end_date = DateTimeField(required=True)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        trainer = User.objects.filter(
+            trainer_profile__isnull=False).get(id=cleaned_data['trainer_id'])
+
+        start_date: datetime = cleaned_data.get('start_date')
+        end_date: datetime = cleaned_data.get('end_date')
+
+        self.add_error('start_date', 'Помилка поля')
 
         return cleaned_data
