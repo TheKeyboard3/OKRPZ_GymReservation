@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
+from users.models import ClientProfile, TrainerProfile
 from booking.models import Departament, Reservation, WorkSchedule
-from users.models import User, ClientProfile, TrainerProfile
 
 
 @admin.register(Departament)
@@ -14,16 +14,16 @@ class DepartamentAdmin(admin.ModelAdmin):
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
     list_display = ['id', 'client', 'trainer', 'created',
-                    'start_date', 'end_date', 'active']
+                    'start_date', 'end_date']
     list_display_links = ['client']
-    list_filter = ['created', 'active']
+    list_filter = ['created']
     date_hierarchy = 'created'
-    readonly_fields = ['created', 'active']
+    readonly_fields = ['created']
     list_per_page = 20
     fields = [
         ('client', 'trainer', 'created'),
         ('start_date', 'end_date'),
-        ('departament', 'active')
+        ('departament')
     ]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -54,12 +54,11 @@ class WorkScheduleOverrideForm(forms.ModelForm):
 @admin.register(WorkSchedule)
 class WorkScheduleAdmin(admin.ModelAdmin):
     form = WorkScheduleOverrideForm
-    list_display = ['trainer_name', 'day_of_week', 'start_time', 'end_time']
+    list_display = ['trainer_name', 'start_time', 'end_time']
     list_filter = ['trainer']
     readonly_fields = []
     list_per_page = 20
     fields = [
         'trainer',
-        'day_of_week',
         ('start_time', 'end_time')
     ]

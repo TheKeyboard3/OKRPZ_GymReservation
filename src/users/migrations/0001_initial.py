@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('bio', models.TextField(blank=True, null=True, verbose_name='Опис')),
                 ('phone_number', phonenumber_field.modelfields.PhoneNumberField(blank=True, max_length=128, null=True, region='UA', verbose_name='Номер телефону')),
-                ('avatar', models.ImageField(blank=True, null=True, upload_to=users.models.avatar_path, verbose_name='Фото профілю')),
+                ('avatar', models.ImageField(blank=True, null=True, upload_to=users.models.trainer_path, verbose_name='Фото профілю')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='trainer_profile', to=settings.AUTH_USER_MODEL, verbose_name='Профіль тренера')),
             ],
             options={
@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
             name='ClientProfile',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('avatar', models.ImageField(blank=True, null=True, upload_to=users.models.avatar_path, verbose_name='Фото профілю')),
+                ('avatar', models.ImageField(blank=True, null=True, upload_to=users.models.client_path, verbose_name='Фото профілю')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='client_profile', to=settings.AUTH_USER_MODEL, verbose_name='Профіль клієнта')),
             ],
             options={
