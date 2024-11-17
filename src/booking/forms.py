@@ -49,15 +49,16 @@ class CreateWorkSheduleForm(Form):
     trainer_id = IntegerField(required=True)
     start_date = DateTimeField(required=True)
     end_date = DateTimeField(required=True)
+    weekday = IntegerField(required=True)
 
     def clean(self):
         cleaned_data = super().clean()
-        trainer = User.objects.filter(
-            trainer_profile__isnull=False).get(id=cleaned_data['trainer_id'])
-
+        
+        trainer = User.trainers.get(id=cleaned_data['trainer_id'])
         start_date: datetime = cleaned_data.get('start_date')
         end_date: datetime = cleaned_data.get('end_date')
+        weekday: int = cleaned_data.get('weekday')
 
-        self.add_error('start_date', 'Помилка поля')
+        # self.add_error('weekday', 'Помилка поля')
 
         return cleaned_data

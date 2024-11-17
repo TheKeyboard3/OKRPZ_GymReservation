@@ -11,8 +11,8 @@ from booking.forms import CreateWorkSheduleForm
 
 
 class CreateWorkShedule(NotTrainerRequiredMixin, FormView):
-    template_name = 'booking/create_reservation.html'
-    form_class = CreateWorkSheduleForm()
+    template_name = 'booking/create_work_shedule.html'
+    form_class = CreateWorkSheduleForm
 
     def form_valid(self, form: CreateWorkSheduleForm):
         try:
@@ -32,8 +32,8 @@ class CreateWorkShedule(NotTrainerRequiredMixin, FormView):
     def form_invalid(self, form: CreateWorkSheduleForm):
         return self.render_to_response(self.get_context_data(form=form))
 
-    def get_success_url(self):
-        return reverse('booking:reservation', kwargs={'username': self.kwargs['username']})
+    def get_success_url(self) -> str:
+        return reverse('booking:shedule_add', kwargs={'id': self.kwargs['id']})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -41,7 +41,7 @@ class CreateWorkShedule(NotTrainerRequiredMixin, FormView):
         current_date = localtime(timezone.now())
 
         trainer = TrainerProfile.objects.get(
-            user__username=self.kwargs['username'])
+            user__id=self.kwargs['id'])
         work_schedule = WorkSchedule.objects.filter(trainer=trainer)
 
         context['trainer'] = trainer
