@@ -57,8 +57,12 @@ class User(AbstractUser):
         return self.get_full_name()
 
 
-def avatar_path(instance: User, filename):
-    return f'images/users/{instance.user.id}/avatar/{filename}'
+def client_path(instance: User, filename):
+    return f'images/clients/{instance.user.id}/{filename}'
+
+
+def trainer_path(instance: User, filename):
+    return f'images/trainers/{instance.user.id}/{filename}'
 
 
 class Client(User):
@@ -93,7 +97,7 @@ class ClientProfile(Model):
 
     user = OneToOneField(User, on_delete=CASCADE,
                          related_name='client_profile', verbose_name='Профіль клієнта')
-    avatar = ImageField('Фото профілю', upload_to=avatar_path,
+    avatar = ImageField('Фото профілю', upload_to=client_path,
                         blank=True, null=True)
 
     class Meta():
@@ -117,9 +121,9 @@ class TrainerProfile(Model):
     bio = TextField('Опис', blank=True, null=True)
     phone_number = PhoneNumberField('Номер телефону', region='UA',
                                     blank=True, null=True)
-    avatar = ImageField('Фото профілю', upload_to=avatar_path,
+    avatar = ImageField('Фото профілю', upload_to=trainer_path,
                         blank=True, null=True)
-    departaments = ManyToManyField('booking.Departament', blank=True, 
+    departaments = ManyToManyField('booking.Departament', blank=True,
                                    related_name='trainers',
                                    verbose_name='Відділення у яких працює тренер')
 
