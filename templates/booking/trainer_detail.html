@@ -48,6 +48,10 @@
                         {% endif %}
 
                         {% if user.is_superuser %}
+                            <a href="{% url 'booking:shedule_add' trainer.id %}" 
+                                class="btn btn-dark mr-2">
+                                Змінити розклад <i class="bi bi-calendar4-week"></i>
+                            </a>
                             <a href="/{{ admin_path }}/users/trainer/{{ trainer.user.id }}/change/" 
                                 class="btn btn-dark"
                                 title="Панель адміністратора">

@@ -69,9 +69,6 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
     def form_invalid(self, form: CreateReservationForm):
         return self.render_to_response(self.get_context_data(form=form))
 
-    def get_success_url(self):
-        return reverse('booking:reservation', kwargs={'id': self.kwargs['id']})
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -139,3 +136,6 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
         context['min_end_time'] = min_end_time.strftime('%Y-%m-%dT%H:%M')
         context['max_end_time'] = max_end_time.strftime('%Y-%m-%dT%H:%M')
         return context
+
+    def get_success_url(self):
+        return reverse('booking:reservation', kwargs={'id': self.kwargs['id']})

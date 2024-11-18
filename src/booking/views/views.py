@@ -45,3 +45,15 @@ class TrainerDetailView(DetailView):
             'trainer': trainer,
         }
         return render(request, 'booking/trainer_detail.html', context)
+
+
+class TrainerAvailableTimesView(View):
+    def get(self, request, trainer_id, date):
+        trainer = get_object_or_404(TrainerProfile, user__id=id)
+
+        context = {
+            'available_times': None
+        }
+        return render(request, 'booking/trainer_detail.html', context)
+
+    pass  # TODO Дописати endpoint що повертає доступні проміжки часу для резервації у тренера за конкретну дату
