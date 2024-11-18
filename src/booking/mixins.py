@@ -2,6 +2,17 @@ from django.contrib.auth.mixins import AccessMixin
 from django.http import HttpRequest
 
 
+class AdminOnlyMixin(AccessMixin):
+    """Допускає тільки адміністраторів"""
+    
+    def dispatch(self, request: HttpRequest, *args, **kwargs):
+
+        if not request.user.is_staff:
+            return self.handle_no_permission()
+
+        return super().dispatch(request, *args, **kwargs)
+
+
 class NotTrainerRequiredMixin(AccessMixin):
     """Не допускає тренерів та не авторизованих."""
 

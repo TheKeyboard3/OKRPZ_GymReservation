@@ -6,11 +6,11 @@ from django.views.generic import FormView
 from core.settings.base import MIN_RESERVATION_TIME, MAX_RESERVATION_TIME
 from users.models import User, TrainerProfile
 from booking.models import Reservation, WorkSchedule
-from booking.mixins import NotTrainerRequiredMixin
+from booking.mixins import AdminOnlyMixin
 from booking.forms import CreateWorkSheduleForm
 
 
-class CreateWorkShedule(NotTrainerRequiredMixin, FormView):
+class CreateWorkShedule(AdminOnlyMixin, FormView):
     template_name = 'booking/create_work_shedule.html'
     form_class = CreateWorkSheduleForm
 
@@ -40,8 +40,7 @@ class CreateWorkShedule(NotTrainerRequiredMixin, FormView):
 
         current_date = localtime(timezone.now())
 
-        trainer = TrainerProfile.objects.get(
-            user__id=self.kwargs['id'])
+        trainer = TrainerProfile.objects.get(user__id=self.kwargs['id'])
         work_schedule = WorkSchedule.objects.filter(trainer=trainer)
 
         context['trainer'] = trainer

@@ -2,7 +2,7 @@ from django.forms import Form, IntegerField, DateTimeField
 from django.utils import timezone
 from django.utils.timezone import datetime, timedelta, localtime
 from core.settings.base import MIN_RESERVATION_TIME, MAX_RESERVATION_TIME
-from users.models import User
+from users.models import User, TrainerProfile
 
 
 class CreateReservationForm(Form):
@@ -54,11 +54,9 @@ class CreateWorkSheduleForm(Form):
     def clean(self):
         cleaned_data = super().clean()
         
-        trainer = User.trainers.get(id=cleaned_data['trainer_id'])
+        trainer =  TrainerProfile.objects.get(user__id=cleaned_data['trainer_id'])
         start_date: datetime = cleaned_data.get('start_date')
         end_date: datetime = cleaned_data.get('end_date')
         weekday: int = cleaned_data.get('weekday')
-
-        # self.add_error('weekday', 'Помилка поля')
 
         return cleaned_data
