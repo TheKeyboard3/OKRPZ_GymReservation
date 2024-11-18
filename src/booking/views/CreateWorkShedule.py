@@ -1,10 +1,11 @@
+from datetime import date, time
 from django.contrib import messages
 from django.utils import timezone
 from django.utils.timezone import datetime, timedelta, localtime
 from django.urls import reverse
 from django.views.generic import FormView
 from core.settings.base import MIN_RESERVATION_TIME, MAX_RESERVATION_TIME
-from users.models import User, TrainerProfile
+from users.models import TrainerProfile
 from booking.models import Reservation, WorkSchedule
 from booking.mixins import AdminOnlyMixin
 from booking.forms import CreateWorkSheduleForm
@@ -16,33 +17,66 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
 
     def form_valid(self, form: CreateWorkSheduleForm):
         try:
-            trainer = TrainerProfile.objects.get(
-                user__username=self.kwargs['id'])
+            trainer = TrainerProfile.objects.get(user__id=form.cleaned_data['trainer_id'])
+            start_date: date = form.cleaned_data['start_date']
+            end_date: date = form.cleaned_data['end_date']
+            weekday: int = form.cleaned_data['weekday']
+            start_time: time = form.cleaned_data['start_time']
+            end_time: time = form.cleaned_data['end_time']
 
-            # messages.error(self.request, 'Помилка')
-            # return self.form_invalid(form)
+            # Генерація розкладу для вибраного дня тижня
+            current_date: date = start_date
+            created_schedules = []
+            
+            while current_date <= end_date:
+                if current_date.weekday() == weekday:
+                    start_datetime = datetime.combine(current_date, start_time)
+                    end_datetime = datetime.combine(current_date, end_time)
 
-            messages.success(self.request, 'Розклад додано')
+                    # Перевірка на конфлікт із існуючими бронюваннями
+                    if Reservation.objects.filter(
+                        trainer=trainer,
+                        start_date__lt=end_datetime,
+                        end_date__gt=start_datetime
+                    ).exists():
+                        messages.error(self.request, f"Неможливо додати розклад на {current_date}: є бронювання.")
+                        return self.form_invalid(form)
+
+                    # Створення нового розкладу
+                    WorkSchedule.objects.create(
+                        trainer=trainer,
+                        start_time=start_datetime,
+                        end_time=end_datetime,
+                    )
+                    created_schedules.append(current_date)
+
+                current_date += timedelta(days=1)
+
+            if created_schedules:
+                messages.success(self.request, f"Розклад успішно створено для {len(created_schedules)} днів.")
+            else:
+                messages.warning(self.request, "Розклад не створено: жоден день не відповідає обраному дню тижня.")
+
             return super().form_valid(form)
 
-        except User.DoesNotExist:
+        except TrainerProfile.DoesNotExist:
             messages.error(self.request, 'Такого тренера не існує!')
             return self.form_invalid(form)
 
     def form_invalid(self, form: CreateWorkSheduleForm):
         return self.render_to_response(self.get_context_data(form=form))
 
-    def get_success_url(self) -> str:
-        return reverse('booking:shedule_add', kwargs={'id': self.kwargs['id']})
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         current_date = localtime(timezone.now())
-
         trainer = TrainerProfile.objects.get(user__id=self.kwargs['id'])
         work_schedule = WorkSchedule.objects.filter(trainer=trainer)
 
         context['trainer'] = trainer
         context['current_day'] = current_date.weekday()
+        context['work_schedule'] = work_schedule
         return context
+    
+    def get_success_url(self) -> str:
+        return reverse('booking:shedule_add', kwargs={'id': self.kwargs['id']})

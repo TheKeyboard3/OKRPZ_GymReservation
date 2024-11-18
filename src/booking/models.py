@@ -69,18 +69,4 @@ class WorkSchedule(Model):
     def trainer_name(self):
         return self.trainer.user.get_full_name()
     trainer_name.short_description = 'Тренер'
-    
-    def clean(self):
-        from booking.models import Reservation
-        
-        overlapping_reservations = Reservation.objects.filter(
-            trainer=self.trainer,
-            start_date__lt=self.end_time,
-            end_date__gt=self.start_time
-        )
-        if overlapping_reservations.exists():
-            raise ValidationError(
-                'Неможливо змінити розклад, оскільки вже існують бронювання на цей час.'
-            )
-
-        super().clean()
+ 
