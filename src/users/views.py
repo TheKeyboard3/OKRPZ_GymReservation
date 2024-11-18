@@ -150,7 +150,7 @@ class PasswordResetView(FormView):
 class PasswordResetConfirmView(FormView):
     template_name = 'users/password_reset_confirm.html'
     form_class = SetNewPasswordForm
-    success_url = reverse_lazy('user:profile')
+    success_url = reverse_lazy('booking:trainers')
 
     def get(self, request, *args, **kwargs):
         token = kwargs.get('token')
@@ -159,7 +159,7 @@ class PasswordResetConfirmView(FormView):
         if user is None:
             messages.error(
                 self.request, 'Це посилання для зміни пароля застаріло')
-            return redirect('main:index')
+            return redirect('users:login')
 
         return super().get(request, *args, **kwargs)
 
