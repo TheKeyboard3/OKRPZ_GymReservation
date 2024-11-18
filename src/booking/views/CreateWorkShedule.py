@@ -1,14 +1,16 @@
+import logging
 from datetime import date, time
 from django.contrib import messages
 from django.utils import timezone
 from django.utils.timezone import datetime, timedelta, localtime
 from django.urls import reverse
 from django.views.generic import FormView
-from core.settings.base import MIN_RESERVATION_TIME, MAX_RESERVATION_TIME
 from users.models import TrainerProfile
 from booking.models import Reservation, WorkSchedule
-from booking.mixins import AdminOnlyMixin
 from booking.forms import CreateWorkSheduleForm
+from booking.mixins import AdminOnlyMixin
+
+logger = logging.getLogger(__name__)
 
 
 class CreateWorkShedule(AdminOnlyMixin, FormView):
@@ -27,8 +29,14 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
             # Генерація розкладу для вибраного дня тижня
             current_date: date = start_date
             created_schedules = []
-            
+
+            # Логування початкових значень
+            logger.debug(f"Початкова дата: {start_date}, Кінцева дата: {end_date}, День тижня: {weekday}")
+
             while current_date <= end_date:
+                # Лог для перевірки дня тижня
+                logger.debug(f"Перевіряю {current_date}, день тижня: {current_date.weekday()}")  # Логування
+
                 if current_date.weekday() == weekday:
                     start_datetime = datetime.combine(current_date, start_time)
                     end_datetime = datetime.combine(current_date, end_time)
@@ -50,13 +58,17 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
                     )
                     created_schedules.append(current_date)
 
+                    # Логування додавання розкладу
+                    logger.debug(f"Розклад додано для {current_date}")
+
+                # Додаємо наступний день
                 current_date += timedelta(days=1)
 
             if created_schedules:
                 messages.success(self.request, f"Розклад успішно створено для {len(created_schedules)} днів.")
             else:
                 messages.warning(self.request, "Розклад не створено: жоден день не відповідає обраному дню тижня.")
-
+            
             return super().form_valid(form)
 
         except TrainerProfile.DoesNotExist:
@@ -72,7 +84,8 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
         trainer = TrainerProfile.objects.get(user__id=self.kwargs['id'])
         work_schedules = WorkSchedule.objects.filter(trainer=trainer)
         current_date = localtime(timezone.now())
-        schedule_days = [(current_date.date() + timedelta(days=i)) for i in range(14)]
+        schedule_days = [(current_date.date() + timedelta(days=i))
+                         for i in range(14)]
 
         schedule_by_day = {
             day: work_schedules.filter(
@@ -87,6 +100,6 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
         context['schedule_days'] = schedule_days
         context['schedule_by_day'] = schedule_by_day
         return context
-    
+
     def get_success_url(self) -> str:
         return reverse('booking:shedule_add', kwargs={'id': self.kwargs['id']})

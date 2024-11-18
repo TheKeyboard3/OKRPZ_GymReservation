@@ -1,8 +1,9 @@
 from datetime import date, time
 from django.utils.timezone import datetime, timedelta, localtime, now
-from django.forms import Form, IntegerField, DateTimeField, DateField, TimeField, ValidationError
+from django.forms import Form, Select, IntegerField, ChoiceField, DateTimeField, DateField, TimeField, ValidationError
 from core.settings.base import MIN_RESERVATION_TIME, MAX_RESERVATION_TIME
 from users.models import User, TrainerProfile
+from booking.models import WeekdayEnum
 
 
 class CreateReservationForm(Form):
@@ -49,8 +50,11 @@ class CreateWorkSheduleForm(Form):
     trainer_id = IntegerField(required=True)
     start_date = DateField(required=True, help_text='Дата початку періоду')
     end_date = DateField(required=True, help_text='Дата завершення періоду')
-    weekday = IntegerField(required=True, min_value=0,
-                           max_value=6, help_text='День тижня')
+    weekday = ChoiceField(
+            choices=WeekdayEnum.choices(),
+            widget=Select(attrs={'class': 'form-control'}),
+            required=True
+        )
     start_time = TimeField(required=True, help_text='Час початку роботи')
     end_time = TimeField(required=True, help_text='Час завершення роботи')
 

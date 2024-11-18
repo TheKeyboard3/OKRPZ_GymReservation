@@ -1,5 +1,5 @@
+from enum import Enum
 from django.db.models import Model, CASCADE, CharField, DateTimeField, ForeignKey
-from django.forms import ValidationError
 from users.models import ClientProfile, TrainerProfile
 
 
@@ -47,6 +47,23 @@ class Reservation(Model):
     def duration_in_minutes(self):
         duration = self.end_date - self.start_date
         return round(duration.total_seconds() // 60)
+
+
+class WeekdayEnum(Enum):
+    Monday = 0, 'Понеділок'
+    Tuesday = 1, 'Вівторок'
+    Wednesday = 2, 'Середа'
+    Thursday = 3, 'Четвер'
+    Friday = 4, 'П’ятниця'
+    Saturday = 5, 'Субота'
+    Sunday = 6, 'Неділя'
+
+    def __str__(self):
+        return self.value[1]
+    
+    @classmethod
+    def choices(cls):
+        return [(day.value[0], day.value[1]) for day in cls]
 
 
 class WorkSchedule(Model):
