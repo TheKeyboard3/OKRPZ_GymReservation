@@ -69,13 +69,23 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        current_date = localtime(timezone.now())
         trainer = TrainerProfile.objects.get(user__id=self.kwargs['id'])
-        work_schedule = WorkSchedule.objects.filter(trainer=trainer)
+        work_schedules = WorkSchedule.objects.filter(trainer=trainer)
+        current_date = localtime(timezone.now())
+        schedule_days = [(current_date.date() + timedelta(days=i)) for i in range(14)]
+
+        schedule_by_day = {
+            day: work_schedules.filter(
+                start_time__date=day
+            ).order_by('start_time')
+            for day in schedule_days
+        }
 
         context['trainer'] = trainer
         context['current_day'] = current_date.weekday()
-        context['work_schedule'] = work_schedule
+        context['work_schedule'] = work_schedules
+        context['schedule_days'] = schedule_days
+        context['schedule_by_day'] = schedule_by_day
         return context
     
     def get_success_url(self) -> str:
