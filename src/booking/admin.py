@@ -12,8 +12,8 @@ class DepartamentAdmin(admin.ModelAdmin):
 
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
-    list_display = ['id', 'client', 'trainer', 'created',
-                    'start_date', 'end_date']
+    list_display = ['id', 'client', 'trainer', 'start_date', 'end_date',
+                    'display_weekday', 'created',]
     list_display_links = ['client']
     list_filter = ['created']
     date_hierarchy = 'created'
@@ -39,21 +39,18 @@ class ReservationAdmin(admin.ModelAdmin):
                 kwargs['initial'] = first
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-
-# class WorkScheduleOverrideForm(forms.ModelForm):
-#     class Meta:
-#         model = WorkSchedule
-#         fields = '__all__'
-#         widgets = {
-#             'start_time': forms.TimeInput(format='%H:%M'),
-#             'end_time': forms.TimeInput(format='%H:%M'),
-#         }
+    def display_weekday(self, obj: Reservation):
+        for day in WeekdayEnum:
+            if day.value[0] == obj.start_date.weekday():
+                return day.value[1]
+        return '-'
+    display_weekday.short_description = 'День тижня'
 
 
 @admin.register(WorkSchedule)
 class WorkScheduleAdmin(admin.ModelAdmin):
-    # form = WorkScheduleOverrideForm
-    list_display = ['trainer_name', 'start_time', 'end_time', 'display_weekday']
+    list_display = ['trainer_name', 'start_time',
+                    'end_time', 'display_weekday']
     list_filter = ['trainer']
     readonly_fields = []
     list_per_page = 20
@@ -61,7 +58,8 @@ class WorkScheduleAdmin(admin.ModelAdmin):
         'trainer',
         ('start_time', 'end_time')
     ]
-    def display_weekday(self, obj: WorkSchedule): 
+
+    def display_weekday(self, obj: WorkSchedule):
         for day in WeekdayEnum:
             if day.value[0] == obj.start_time.weekday():
                 return day.value[1]
