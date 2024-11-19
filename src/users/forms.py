@@ -1,13 +1,10 @@
 from django.forms import Form, ModelForm, CharField, TextInput, EmailField, ImageField, ValidationError, DateField
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django.contrib.auth.password_validation import validate_password
-from django.utils.timezone import timedelta
 
-from .models import User, ClientProfile
-from core.settings.base import MIN_USER_AGE
 from phonenumber_field.formfields import PhoneNumberField
 from django_recaptcha.fields import ReCaptchaField
-from datetime import date
+from users.models import User, ClientProfile, TrainerProfile
 
 
 class UserLoginForm(AuthenticationForm):
@@ -37,6 +34,16 @@ class ClientProfileEditForm(ModelForm):
     class Meta:
         model = ClientProfile
         fields = ('avatar',)
+
+
+class TrainerProfileEditForm(ModelForm):
+    avatar = ImageField(required=False)
+    phone_number = PhoneNumberField(required=True)
+    bio = CharField(required=True)
+
+    class Meta:
+        model = TrainerProfile
+        fields = ('avatar', 'phone_number', 'bio')
 
 
 class ResetTokenForm(Form):

@@ -107,7 +107,7 @@ class ClientProfile(Model):
         ordering = ['user__date_joined']
 
     def __str__(self):
-        return f'Клієнт ({self.user.get_full_name()})'
+        return self.user.get_full_name()
 
     def get_absolute_url(self):
         return reverse('user:detail', args=[self.user.username])
@@ -134,4 +134,4 @@ class TrainerProfile(Model):
         ordering = ['user__date_joined']
 
     def __str__(self):
-        return f'Тренер ({self.user.get_full_name()})'
+        return self.user.get_full_name()

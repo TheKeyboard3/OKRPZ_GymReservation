@@ -216,26 +216,16 @@ RECAPTCHA_PRIVATE_KEY = env.str('RECAPTCHA_PRIVATE_KEY')
 RECAPTCHA_DOMAIN = env.str('RECAPTCHA_DOMAIN')
 
 # Custom vars
-APP_NAME = env.str('APP_NAME', 'Site')
+SITE_ID = 1
+APP_NAME = env.str('APP_NAME')
 DOMAIN = env.str('DOMAIN')
+ADMINS = [(APP_NAME, EMAIL_HOST_USER)]
 ADMIN_PATH = env.str('ADMIN_PATH')
 SITE_SUPPORT_EMAIL = env.str('SITE_SUPPORT_EMAIL')
-MIN_USER_AGE = env.int('MIN_USER_AGE')
 TOKEN_LIFETIME = env.int('TOKEN_LIFETIME')
 
 MIN_RESERVATION_TIME = 15
 MAX_RESERVATION_TIME = 15
-
-SITE_ID = 1
-ADMINS = [(APP_NAME, EMAIL_HOST_USER)]
-DIRECTORY = ''
-FILEBROWSER_DIRECTORY = ''
-FILEBROWSER_EXTENSIONS = {
-    'Image': ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
-    'Document': ['.txt', '.pdf', '.doc', '.rtf', '.xls', '.csv', '.py'],
-    'Video': ['.mov', '.wmv', '.mpeg', '.mpg', '.avi', '.rm'],
-    'Audio': ['.mp3', '.mp4', '.wav', '.aiff', '.midi', '.m4p']
-}
 
 CELERY_TIMEZONE = env.str('TIME_ZONE')
 CELERY_BROKER_URL = env.str('CELERY_BROKER_URL')

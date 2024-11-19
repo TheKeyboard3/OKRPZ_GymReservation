@@ -21,11 +21,6 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
             start_date: datetime = form.cleaned_data['start_date']
             end_date: datetime = form.cleaned_data['end_date']
 
-            if (trainer == getattr(self.request.user, 'trainer_profile', False)):
-                messages.error(self.request,
-                               'Ви тренер та не можете резервувати час!')
-                return self.form_invalid(form)
-
             schedules = WorkSchedule.objects.filter(
                 trainer=trainer, day_of_week=start_date.weekday())
 
@@ -41,7 +36,6 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
                 return self.form_invalid(form)
 
             overlapping_reservations = Reservation.objects.filter(
-                active=True,
                 trainer=trainer,
                 start_date__lt=end_date,
                 end_date__gt=start_date
@@ -121,7 +115,7 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
                     current_slot += timedelta(minutes=MIN_RESERVATION_TIME)
 
         user_reservations = Reservation.objects.filter(
-            client=client, trainer=trainer, active=True)
+            client=client, trainer=trainer)
 
         max_start_time = current_date
         min_end_time = min_start_time + timedelta(minutes=MIN_RESERVATION_TIME)
