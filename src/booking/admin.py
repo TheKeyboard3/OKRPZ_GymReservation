@@ -1,7 +1,6 @@
-from django import forms
 from django.contrib import admin
 from users.models import ClientProfile, TrainerProfile
-from booking.models import Departament, Reservation, WorkSchedule
+from booking.models import Departament, Reservation, WorkSchedule, WeekdayEnum
 
 
 @admin.register(Departament)
@@ -54,7 +53,7 @@ class ReservationAdmin(admin.ModelAdmin):
 @admin.register(WorkSchedule)
 class WorkScheduleAdmin(admin.ModelAdmin):
     # form = WorkScheduleOverrideForm
-    list_display = ['trainer_name', 'start_time', 'end_time']
+    list_display = ['trainer_name', 'start_time', 'end_time', 'display_weekday']
     list_filter = ['trainer']
     readonly_fields = []
     list_per_page = 20
@@ -62,3 +61,9 @@ class WorkScheduleAdmin(admin.ModelAdmin):
         'trainer',
         ('start_time', 'end_time')
     ]
+    def display_weekday(self, obj: WorkSchedule): 
+        for day in WeekdayEnum:
+            if day.value[0] == obj.start_time.weekday():
+                return day.value[1]
+        return '-'
+    display_weekday.short_description = 'День тижня'
