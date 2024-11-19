@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static humanize %}
+{% load static humanize main_tags %}
 
 {% block title %}
     <title>Розклад: {{ trainer.user.get_full_name }} - {{ site_main_title }}</title>
@@ -105,7 +105,7 @@
                     <tr>
                         {% for day in schedule_days %}
                             <td>
-                                {% with schedule_by_day.day as schedules %}
+                                {% with schedule_by_day|get_item:day as schedules %}
                                     {% if schedules %}
                                         {% for schedule in schedules %}
                                             <p>{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:"H:i" }}</p>
