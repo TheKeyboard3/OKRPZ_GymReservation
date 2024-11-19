@@ -18,6 +18,11 @@ def change_params(context, **kwargs):
 
 
 @register.filter
+def get_item(dictionary: dict, key: str):
+    return dictionary.get(key)
+
+
+@register.filter
 def clear_tags(value):
     text = BeautifulSoup(value, 'html.parser')
     return text.get_text()
