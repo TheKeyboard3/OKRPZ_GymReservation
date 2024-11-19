@@ -21,11 +21,6 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
             start_date: datetime = form.cleaned_data['start_date']
             end_date: datetime = form.cleaned_data['end_date']
 
-            if (trainer == getattr(self.request.user, 'trainer_profile', False)):
-                messages.error(self.request,
-                               'Ви тренер та не можете резервувати час!')
-                return self.form_invalid(form)
-
             schedules = WorkSchedule.objects.filter(
                 trainer=trainer, day_of_week=start_date.weekday())
 

@@ -41,19 +41,19 @@ class ReservationAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
-class WorkScheduleOverrideForm(forms.ModelForm):
-    class Meta:
-        model = WorkSchedule
-        fields = '__all__'
-        widgets = {
-            'start_time': forms.TimeInput(format='%H:%M'),
-            'end_time': forms.TimeInput(format='%H:%M'),
-        }
+# class WorkScheduleOverrideForm(forms.ModelForm):
+#     class Meta:
+#         model = WorkSchedule
+#         fields = '__all__'
+#         widgets = {
+#             'start_time': forms.TimeInput(format='%H:%M'),
+#             'end_time': forms.TimeInput(format='%H:%M'),
+#         }
 
 
 @admin.register(WorkSchedule)
 class WorkScheduleAdmin(admin.ModelAdmin):
-    form = WorkScheduleOverrideForm
+    # form = WorkScheduleOverrideForm
     list_display = ['trainer_name', 'start_time', 'end_time']
     list_filter = ['trainer']
     readonly_fields = []
