@@ -21,26 +21,18 @@ class UserAdminManager(UserManager):
 
 
 class User(AbstractUser):
-    """User в системі (Користувач, Тренер, Адмін)."""
-
+    """User в системі (Клієнт, Тренер, Адміністратор)."""
+    username = CharField('Username', max_length=80, blank=True, null=True)
+    first_name = CharField('Ім\'я', max_length=150)
+    last_name = CharField('Прізвище', max_length=150)
     email = EmailField('Email', unique=True,
-                       help_text='Email через який користувач зареєструвався')
+                       help_text='Email через який користувач зможе увійти')
     is_staff = BooleanField('Адміністратор', default=False,
                             help_text='Чи є користувач адміністратором')
-    activation_key = CharField('Код', max_length=80, blank=True, null=True)
-
-    @property
-    def profile(self):
-        if hasattr(self, 'client_profile'):
-            return self.client_profile
-        if hasattr(self, 'trainer_profile'):
-            return self.trainer_profile
-
-        return None
-
-    EMAIL_FIELD = 'email'
+    activation_key = CharField('Код', max_length=80, blank=True, null=True,
+                               help_text='Код активації або зміни паролю')
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = ['password', 'first_name', 'last_name']
 
     objects = UserManager()
     clients = UserClientManager()
@@ -55,6 +47,14 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.get_full_name()
+    
+    @property
+    def profile(self):
+        if hasattr(self, 'client_profile'):
+            return self.client_profile
+        if hasattr(self, 'trainer_profile'):
+            return self.trainer_profile
+        return None
 
 
 def client_path(instance: User, filename):
