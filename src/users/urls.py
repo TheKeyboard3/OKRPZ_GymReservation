@@ -18,6 +18,6 @@ urlpatterns = [
          name='client_profile_change'),
     path('trainer-change/', views.TrainerProfileChangeView.as_view(), 
          name='trainer_profile_change'),
-    path('profile/<int:id>/', views.ProfileDetailView.as_view(), 
+    path('profile/<int:id>/', views.ClientProfileDetailView.as_view(), 
          name='detail')
 ]

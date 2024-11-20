@@ -8,35 +8,36 @@
         <div class="card mt-5 mb-5">
             <div class="row">
                 <div class="col-md-4">
-                    <img class="rounded-circle" 
-                        src="{% if detail_user.profile.avatar %}{{ detail_user.profile.avatar }}{% else %}{% static 'images/baseavatar.jpg' %}{% endif %}"
-                        class="img-thumbnail rounded-0"
-                        alt="Avatar image" 
-                        width="250" height="250"
-                        data-bs-toggle="modal"
-                        data-bs-target="#imageModal1">
+                    {% if detail_user.client_profile.avatar %}
+                        <img src="{{ detail_user.client_profile.avatar.url }}"
+                            class="img-fluid rounded-circle"
+                            title="Фото ({{ detail_user.get_full_name }})"
+                            width="250" height="250"
+                            data-bs-toggle="modal"
+                            data-bs-target="#imageModal1"
+                            style="max-width: 150px;">
+                    {% else %}
+                        <img src="{% static 'images/baseavatar.jpg' %}"
+                            class="img-fluid rounded-circle"
+                            title="Фото ({{ detail_user.get_full_name }})"
+                            width="250" height="250"
+                            data-bs-toggle="modal"
+                            data-bs-target="#imageModal1"
+                            style="max-width: 150px;">
+                    {% endif %}
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
                         <h5 class="card-title">
                             <text class="text-uppercase">
-                                {{ detail_user.get_full_name|default:detail_user.get_full_name }}
-                            </text> 
-                            <i class="bi bi-arrow-right-short"></i> 
-                            <text class="text-muted">{{ detail_user.get_full_name }}</text>
+                                {{ detail_user.get_full_name }}
+                            </text>
                         </h5>
 
-                        <div class="bio">
-                            {% if detail_user.profile.bio %}
-                                {{ detail_user.profile.bio|linebreaks }}
-                            {% endif %}
-                        </div>
-
                         <p>Дата реєстрації: {{ detail_user.date_joined|naturalday }}</p>
-                        <p>Останній вхід: {{ detail_user.last_login|naturalday }}</p>
                         
                         {% if user.is_superuser %}
-                            <a href="/{{ admin_path }}/users/user/{{ detail_user.id }}/change/" 
+                            <a href="/{{ admin_path }}/users/client/{{ detail_user.id }}/change/" 
                                 class="btn btn-dark float-right"
                                 title="Панель адміністратора">
                                 Адмін <i class="bi bi-kanban-fill"></i>

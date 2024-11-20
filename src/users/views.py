@@ -196,7 +196,7 @@ class PasswordResetConfirmView(FormView):
             return None
 
 
-class ProfileDetailView(DetailView):
+class ClientProfileDetailView(LoginRequiredMixin, DetailView):
 
     def get(self, request: HttpRequest, id):
         user = get_object_or_404(User, id=id)
