@@ -43,7 +43,7 @@
                         {% endif %}
 
                         {% if user.is_authenticated  %}
-                            <a href="{% url 'booking:reservation' trainer.id %}" 
+                            <a href="{% url 'booking:reservation' trainer.user.id %}" 
                                 class="btn btn-dark mr-2">
                                 Забронювати час <i class="bi bi-calendar4-week"></i>
                             </a>
