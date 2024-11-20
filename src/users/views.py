@@ -1,18 +1,19 @@
-from django.http import HttpRequest
+from django.http import Http404, HttpRequest
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib import auth, messages
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, FormView
+from django.views.generic import FormView
 from django.views import View
 from core.settings.base import APP_NAME, MEDIA_ROOT, TOKEN_LIFETIME
 from main.tasks import send_email
 from main.services import create_image
+from booking.mixins import ClientOnlyMixin
 from users.tasks import clear_user_token
-from .models import User
-from .forms import UserEditForm, ClientProfileEditForm, UserLoginForm, ResetTokenForm, ResetPasswordForm, SetNewPasswordForm
-from .services import generate_token
+from users.models import User
+from users.forms import UserEditForm, ClientProfileEditForm, UserLoginForm, ResetTokenForm, ResetPasswordForm, SetNewPasswordForm
+from users.services import generate_token
 
 
 class UserLoginView(LoginView):
@@ -28,7 +29,7 @@ class UserLoginView(LoginView):
         return reverse('booking:trainers')
 
 
-class ClientProfileChangeView(LoginRequiredMixin, View):
+class ClientProfileChangeView(ClientOnlyMixin, View):
     template_name = 'users/client_profile_change.html'
 
     def get(self, request: HttpRequest):
@@ -66,7 +67,7 @@ class TrainerProfileChangeView(LoginRequiredMixin, View):
         return render(request, self.template_name)
 
     def post(self, request):
-        
+
         return render(request, self.template_name)
 
 
@@ -196,10 +197,14 @@ class PasswordResetConfirmView(FormView):
             return None
 
 
-class ClientProfileDetailView(LoginRequiredMixin, DetailView):
+class ClientProfileDetailView(LoginRequiredMixin, View):
 
     def get(self, request: HttpRequest, id):
         user = get_object_or_404(User, id=id)
+
+        if not hasattr(user, 'client_profile'):
+            raise Http404('У цей користувач не є клієнтом')
+
         context = {
             'title': user.get_full_name(),
             'detail_user': user,
