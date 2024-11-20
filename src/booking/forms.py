@@ -1,51 +1,50 @@
 from datetime import date, time
 from django.utils.timezone import datetime, timedelta, localtime, now
-from django.forms import Form, Select, IntegerField, TypedChoiceField, DateTimeField, DateField, TimeField, ValidationError
+from django.forms import Form, Select, IntegerField, ChoiceField, TypedChoiceField, DateTimeInput, DateTimeField, DateField, TimeField, ValidationError, HiddenInput
 from core.settings.base import MIN_RESERVATION_TIME, MAX_RESERVATION_TIME
 from users.models import User, TrainerProfile
-from booking.models import WeekdayEnum
+from booking.models import Reservation, Departament, WeekdayEnum
 
 
 class CreateReservationForm(Form):
-    trainer_id = IntegerField(required=True)
-    start_date = DateTimeField(required=True)
-    end_date = DateTimeField(required=True)
+    trainer_id = IntegerField(widget=HiddenInput())
+    start_date = DateTimeField(input_formats=['%Y-%m-%dT%H:%M'])
+    end_date = DateTimeField(input_formats=['%Y-%m-%dT%H:%M'])
+    departament_id = ChoiceField()
+
+    def clean_start_date(self):
+        start_date = self.cleaned_data['start_date']
+        current_time = localtime(now())
+        
+        if start_date < current_time:
+            raise ValidationError("Час початку не може бути в минулому.")
+        
+        return start_date
+
+    def clean_end_date(self):
+        start_date = self.cleaned_data.get('start_date')
+        end_date = self.cleaned_data['end_date']
+        
+        if start_date and end_date <= start_date:
+            raise ValidationError("Час закінчення має бути пізніше за час початку.")
+        
+        return end_date
 
     def clean(self):
         cleaned_data = super().clean()
+        start_date = cleaned_data.get('start_date')
+        end_date = cleaned_data.get('end_date')
+        trainer_id = cleaned_data.get('trainer_id')
         
-        trainer_id: int = cleaned_data.get('trainer_id')
-        start_date: datetime = cleaned_data.get('start_date')
-        end_date: datetime = cleaned_data.get('end_date')
-
-        if start_date and end_date:
-            if start_date <= localtime(now()):
-                self.add_error(
-                    'start_date', '"Час початку" не може бути в минулому!')
-
-            if end_date <= start_date:
-                self.add_error('end_date',
-                               '"Час кінця" не може бути меншим за час початку резервації!')
-
-            if (end_date - start_date) < timedelta(minutes=MAX_RESERVATION_TIME):
-                self.add_error(None,
-                               f'Мінімальний час резервації: {MAX_RESERVATION_TIME} хвилин!')
-
-            if start_date.date() != end_date.date():
-                self.add_error(None, 'Це має бути в один день!')
-
-            if start_date.minute % 15 != 0:
-                self.add_error('start_date',
-                               f'Час початку має бути кратним {MAX_RESERVATION_TIME} хвилинам!')
-
-            if end_date.minute % 15 != 0:
-                self.add_error('end_date',
-                               f'Час кінця має бути кратним {MAX_RESERVATION_TIME} хвилинам!')
-        
-        try:
-            TrainerProfile.objects.get(user__id=trainer_id)
-        except TrainerProfile.DoesNotExist:
-            raise ValidationError('Обраного тренера не існує')
+        if start_date and end_date and trainer_id:
+            # Перевірка на наявність перекриттів з іншими резерваціями
+            overlapping_reservations = Reservation.objects.filter(
+                trainer__id=trainer_id,
+                start_date__lt=end_date,
+                end_date__gt=start_date
+            )
+            if overlapping_reservations.exists():
+                raise ValidationError("Цей час вже зайнятий іншим клієнтом.")
 
         return cleaned_data
 

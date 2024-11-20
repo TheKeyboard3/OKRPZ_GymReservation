@@ -2,87 +2,70 @@
 {% load static humanize main_tags %}
 
 {% block title %}
-    <title>Забронювати час тренера - {{ site_main_title }}</title>
+    <title>Забронювати час у: {{ trainer.user.get_full_name }} - {{ site_main_title }}</title>
 {% endblock %}
 
 {% block content %}
 
 <div class="row">
+    
     <div class="container mt-5 mb-3">
         <div class="row justify-content-center">
 
             <div class="col-md-6 bg-white p-4 rounded">
                 
-                <form class="form-reservation" method="POST">
+                <h3>{{ trainer.user.get_full_name }}: забронювати час </h3>
+                <form method="POST" enctype="multipart/form-data" class="mt-4">
                     {% csrf_token %}
-
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <p>{{ form.non_field_errors }}</p>
-                        </div>
-                    {% endif %}
-
-                    <h1 class="h3 mb-3 fw-normal text-center">
-                        Забронювати час у: {{ trainer.user.get_full_name|default:trainer.user.username }}
-                    </h1>
-                
-                    <div class="form-floating">
-                        <select class="form-control" 
-                            id="id_trainer_id" 
+                    <div class="form-group mb-3">
+                        <input id="id_trainer_id" 
                             name="trainer_id"
+                            value="{{ trainer.user.id }}"
                             readonly
                             hidden>
-                            <option value="{{ trainer.user.id }}">{{ trainer.user.id }}</option>
+                        </input>
+                        {% if form.trainer_id.errors %}
+                            <div class="text-danger">{{ form.trainer_id.errors }}</div>
+                        {% endif %}
+                    </div>
+            
+                    <div class="form-group mb-3">
+                        <label for="id_departament_id" class="form-label">Відділення у яких працює тренер</label>
+                        <select id="id_departament_id" name="departament_id" class="form-control">
+                            {% for departament in trainer.departaments.all %}
+                                <option value="{{ departament.id }}" 
+                                    {% if departament.id == form.data.departament_id %}selected{% endif %}>
+                                    {{ departament.title }}
+                                </option>
+                            {% endfor %}
                         </select>
-                        
-                        {% if form.trainer.errors %}
-                            <div class="alert alert-danger alert-dismissible fade show">
-                                {{ form.trainer.errors }}</div>
+                        {% if form.departament_id.errors %}
+                            <div class="text-danger">{{ form.departament_id.errors }}</div>
                         {% endif %}
                     </div>
-                    <div class="form-floating mt-3">
-                        <label for="id_start_date" class="form-label">Час початку бронювання</label>
-                        <input type="datetime-local" class="form-control" 
-                            value="{{ form.start_date.value|default:min_start_time }}" 
-                            min="{{ min_start_time }}" max="2026-01-01T00:00" 
-                            id="id_start_date" 
-                            name="start_date" 
-                            autofocus="true" 
-                            required>
-                        
+            
+                    <div class="form-group mb-3">
+                        <label for="id_start_date" class="form-label">Початок резервації</label>
+                        <input type="datetime-local" id="id_start_date" name="start_date" 
+                            class="form-control" 
+                            value="{{ form.start_date.value|default:'' }}">
                         {% if form.start_date.errors %}
-                            <div class="alert alert-danger alert-dismissible fade show">
-                                {{ form.start_date.errors }}</div>
+                            <div class="text-danger">{{ form.start_date.errors }}</div>
                         {% endif %}
                     </div>
-                    <div class="form-floating mt-3">
-                        <label for="id_end_date" class="form-label">Час кінця бронювання</label>
-                        <input type="datetime-local" class="form-control" 
-                            value="{{ form.end_date.value|default:min_end_time }}" 
-                            min="{{ min_end_time }}" max="2026-01-01T00:00" 
-                            id="id_end_date" 
-                            name="end_date" 
-                            required>
-                        
+            
+                    <div class="form-group mb-3">
+                        <label for="id_end_date" class="form-label">Кінець резервації</label>
+                        <input type="datetime-local" id="id_end_date" name="end_date" 
+                            class="form-control" 
+                            value="{{ form.end_date.value|default:'' }}">
                         {% if form.end_date.errors %}
-                            <div class="alert alert-danger alert-dismissible fade show">
-                                {{ form.end_date.errors }}</div>
+                            <div class="text-danger">{{ form.end_date.errors }}</div>
                         {% endif %}
                     </div>
-
-                    <div class="form-floating mt-3">
-                        <label for="id_timedelta" class="form-label">Перегляд вільного часу тренера на сьогодні</label>
-                        <div class="form-floating">
-                            <select class="form-control" 
-                                id="id_timedelta" 
-                                name="timedelta">
-                                {% for time in available_times %}
-                                    <option value="{{ time }}">{{ time }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <button class="w-100 btn btn-lg btn-primary mt-3" type="submit">Забронювати</button>
+            
+                    <button type="submit" class="btn btn-success">Зарезервувати</button>
+                    <a href="{% url 'booking:detail' trainer.user.id %}" class="btn btn-secondary">Назад</a>
                 </form>
             </div>
 
