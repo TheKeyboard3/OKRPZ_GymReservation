@@ -13,9 +13,8 @@ class CreateReservationForm(Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        trainer = User.objects.filter(
-            trainer_profile__isnull=False).get(id=cleaned_data['trainer_id'])
-
+        
+        trainer_id: int = cleaned_data.get('trainer_id')
         start_date: datetime = cleaned_data.get('start_date')
         end_date: datetime = cleaned_data.get('end_date')
 
@@ -42,6 +41,11 @@ class CreateReservationForm(Form):
             if end_date.minute % 15 != 0:
                 self.add_error('end_date',
                                f'Час кінця має бути кратним {MAX_RESERVATION_TIME} хвилинам!')
+        
+        try:
+            TrainerProfile.objects.get(user__id=trainer_id)
+        except TrainerProfile.DoesNotExist:
+            raise ValidationError('Обраного тренера не існує')
 
         return cleaned_data
 

@@ -4,7 +4,7 @@ from django.utils.timezone import datetime, timedelta, localtime
 from django.urls import reverse
 from django.views.generic import FormView
 from core.settings.base import MIN_RESERVATION_TIME, MAX_RESERVATION_TIME
-from users.models import User, TrainerProfile
+from users.models import TrainerProfile, ClientProfile, User
 from booking.models import Reservation, WorkSchedule
 from booking.mixins import NotTrainerRequiredMixin
 from booking.forms import CreateReservationForm
@@ -16,44 +16,44 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
 
     def form_valid(self, form: CreateReservationForm):
         try:
-            trainer = TrainerProfile.objects.get(id=self.kwargs['id'])
-
+            trainer = TrainerProfile.objects.get(
+                user__id=form.cleaned_data['trainer_id'])
             start_date: datetime = form.cleaned_data['start_date']
             end_date: datetime = form.cleaned_data['end_date']
 
-            schedules = WorkSchedule.objects.filter(
-                trainer=trainer, day_of_week=start_date.weekday())
+            # schedules = WorkSchedule.objects.filter(
+            #     trainer=trainer, day_of_week=start_date.weekday())
 
-            if not schedules.exists():
-                messages.error(self.request, 'Тренер не працює у цей день!')
-                return self.form_invalid(form)
+            # if not schedules.exists():
+            #     messages.error(self.request, 'Тренер не працює у цей день!')
+            #     return self.form_invalid(form)
 
-            schedule = schedules.first()
+            # schedule = schedules.first()
 
-            if start_date.time() < schedule.start_time or end_date.time() > schedule.end_time:
-                messages.error(
-                    self.request, 'Час не входить в робочий графік тренера!')
-                return self.form_invalid(form)
+            # if start_date.time() < schedule.start_time or end_date.time() > schedule.end_time:
+            #     messages.error(
+            #         self.request, 'Час не входить в робочий графік тренера!')
+            #     return self.form_invalid(form)
 
-            overlapping_reservations = Reservation.objects.filter(
-                trainer=trainer,
-                start_date__lt=end_date,
-                end_date__gt=start_date
-            )
+            # overlapping_reservations = Reservation.objects.filter(
+            #     trainer=trainer,
+            #     start_date__lt=end_date,
+            #     end_date__gt=start_date
+            # )
 
-            if overlapping_reservations.exists():
-                messages.error(
-                    self.request, 'Цей час не входить в доступний проміжок!')
-                return self.form_invalid(form)
+            # if overlapping_reservations.exists():
+            #     messages.error(
+            #         self.request, 'Цей час не входить в доступний проміжок!')
+            #     return self.form_invalid(form)
 
-            Reservation.objects.create(
-                user=self.request.user,
-                trainer=trainer,
-                start_date=start_date,
-                end_date=end_date
-            )
-            messages.success(self.request,
-                             f'Ви зарезервували час у тренера ({trainer.get_full_name()})')
+            # Reservation.objects.create(
+            #     user=self.request.user,
+            #     trainer=trainer,
+            #     start_date=start_date,
+            #     end_date=end_date
+            # )
+            # messages.success(self.request,
+            #                  f'Ви зарезервували час у тренера ({trainer.get_full_name()})')
             return super().form_valid(form)
 
         except User.DoesNotExist:
@@ -75,8 +75,8 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
             min_start_time = current_date.replace(
                 minute=0, second=0, microsecond=0)
 
-        client = getattr(self.request.user, 'client_profile', None)
-        trainer = TrainerProfile.objects.get(id=self.kwargs['id'])
+        client: ClientProfile = self.request.user.profile
+        trainer = TrainerProfile.objects.get(user__id=self.kwargs['id'])
         work_schedule = WorkSchedule.objects.filter(trainer=trainer)
         reservations = Reservation.objects.filter(trainer=trainer,
                                                   start_date__gte=current_date).order_by('start_date')
@@ -92,27 +92,38 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
                 reservation_dict[start_time] = True
                 start_time += timedelta(minutes=MIN_RESERVATION_TIME)
 
-        available_times = []
-        for schedule in work_schedule:
-            # Перевіряємо, чи поточний день тижня відповідає робочому графіку тренера
-            if current_date.weekday() == schedule.day_of_week:
-                start_time = schedule.start_time
-                end_time = schedule.end_time
+        # available_times = []
+        # for schedule in work_schedule:
+        #     # Перевіряємо, чи поточний день тижня відповідає робочому графіку тренера
+        #     if current_date.weekday() == schedule.day_of_week:
+        #         start_time = schedule.start_time
+        #         end_time = schedule.end_time
 
-                current_slot = datetime.combine(
-                    current_date.date(), start_time)
-                end_of_slot = datetime.combine(current_date.date(), end_time)
+        #         current_slot = datetime.combine(
+        #             current_date.date(), start_time)
+        #         end_of_slot = datetime.combine(current_date.date(), end_time)
 
-                # Цикл для перевірки доступності слотів по 15 хвилин
-                while current_slot + timedelta(minutes=MIN_RESERVATION_TIME) <= end_of_slot:
-                    # Перевіряємо, чи немає перекриттів з існуючими бронюваннями
-                    if current_slot not in reservation_dict:
-                        # Додаємо доступний слот до списку
-                        available_times.append(
-                            f'{current_slot.strftime("%H:%M")} - {(current_slot + timedelta(minutes=MIN_RESERVATION_TIME)).strftime("%H:%M")}'
-                        )
-                    # Переходимо до наступного слоту
-                    current_slot += timedelta(minutes=MIN_RESERVATION_TIME)
+        #         # Цикл для перевірки доступності слотів по 15 хвилин
+        #         while current_slot + timedelta(minutes=MIN_RESERVATION_TIME) <= end_of_slot:
+        #             # Перевіряємо, чи немає перекриттів з існуючими бронюваннями
+        #             if current_slot not in reservation_dict:
+        #                 # Додаємо доступний слот до списку
+        #                 available_times.append(
+        #                     f'{current_slot.strftime("%H:%M")} - {(current_slot + timedelta(minutes=MIN_RESERVATION_TIME)).strftime("%H:%M")}'
+        #                 )
+        #             # Переходимо до наступного слоту
+        #             current_slot += timedelta(minutes=MIN_RESERVATION_TIME)
+        
+        work_schedules = WorkSchedule.objects.filter(trainer=trainer)
+        schedule_days = [(current_date.date() + timedelta(days=i))
+                         for i in range(14)]
+
+        schedule_by_day = {
+            day: work_schedules.filter(
+                start_time__date=day
+            ).order_by('start_time')
+            for day in schedule_days
+        }
 
         user_reservations = Reservation.objects.filter(
             client=client, trainer=trainer)
@@ -122,9 +133,12 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
         max_end_time = min_start_time + timedelta(minutes=MAX_RESERVATION_TIME)
 
         context['trainer'] = trainer
-        context['available_times'] = available_times
+        context['available_times'] = None # available_times
         context['user_reservations'] = user_reservations
         context['current_day'] = current_date.weekday()
+        context['work_schedule'] = work_schedules
+        context['schedule_days'] = schedule_days
+        context['schedule_by_day'] = schedule_by_day
         context['min_start_time'] = min_start_time.strftime('%Y-%m-%dT%H:%M')
         context['max_start_time'] = max_start_time.strftime('%Y-%m-%dT%H:%M')
         context['min_end_time'] = min_end_time.strftime('%Y-%m-%dT%H:%M')

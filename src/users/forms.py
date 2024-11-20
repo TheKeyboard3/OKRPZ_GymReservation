@@ -15,7 +15,6 @@ class UserLoginForm(AuthenticationForm):
 class UserEditForm(UserChangeForm):
     first_name = CharField()
     last_name = CharField(required=False)
-    username = CharField()
     email = EmailField(disabled=True)
 
     class Meta:
@@ -23,7 +22,6 @@ class UserEditForm(UserChangeForm):
         fields = (
             'first_name',
             'last_name',
-            'username',
             'email',
         )
 
