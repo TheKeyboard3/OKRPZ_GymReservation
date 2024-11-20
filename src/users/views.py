@@ -83,18 +83,6 @@ class LogoutView(View):
         return redirect(next_page)
 
 
-class ResetWaitView(FormView):
-    template_name = 'users/reset_wait.html'
-    form_class = ResetTokenForm
-    token: str
-
-    def form_valid(self, form):
-        self.token = form.cleaned_data['token']
-        self.success_url = reverse_lazy(
-            'user:register_confirm', kwargs={'token': self.token})
-        return super().form_valid(form)
-
-
 class RegisterConfirmView(View):
     def get(self, request: HttpRequest, token):
         try:

@@ -35,8 +35,10 @@
                         </div>
 
                         {% if user.id == trainer.user.id %}
-                            <a href="{% url 'user:profile' %}" class="btn btn-dark float-right">
-                                <i class="bi bi-pencil-square"></i>
+                            <a href="{% url 'user:trainer_profile_change' %}" 
+                                class="btn btn-dark mr-3 float-right"
+                                title="Редагувати профіль тренера">
+                                Редагувати <i class="bi bi-pencil-square"></i>
                             </a>
                         {% endif %}
 

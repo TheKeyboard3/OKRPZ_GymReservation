@@ -6,8 +6,6 @@ app_name = 'users'
 urlpatterns = [
     path('login/', views.UserLoginView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
-    path('register-wait/', views.ResetWaitView.as_view(), 
-         name='reset_wait'),
     path('confirm/<token>/', views.RegisterConfirmView.as_view(),
          name='register_confirm'),
     path('reset-request/', views.PasswordResetView.as_view(),
