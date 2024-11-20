@@ -110,7 +110,7 @@ class ClientProfile(Model):
         return self.user.get_full_name()
 
     def get_absolute_url(self):
-        return reverse('user:detail', args=[self.user.username])
+        return reverse('user:detail', args=[self.user.id])
 
 
 class TrainerProfile(Model):
