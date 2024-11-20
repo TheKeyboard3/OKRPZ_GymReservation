@@ -18,12 +18,11 @@
                     </div>
                 {% endif %}
 
-                <h3 class="mb-3">
-                    Тренер: {{ trainer.user.get_full_name }}
-                    <p>Додати розклад роботи</p>
-                </h3>
+                <h3>Додати розклад роботи тренера:</h3>
+                <h3>{{ trainer.user.get_full_name }}</h3>
+                <h5>Виберіть проміжок дат</h3>
 
-                <input type="hidden" name="trainer_id" value="{{ trainer.user.id }}">
+                <input type="hidden" name="trainer_id" value="{{ trainer.user.id }}" required>
 
                 <div class="form-group mt-3">
                     <label for="id_start_date" class="form-label">Початкова дата</label>

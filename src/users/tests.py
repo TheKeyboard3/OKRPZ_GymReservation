@@ -20,6 +20,6 @@ class Test_User(TestCase):
 
     def test_get_user(self):
         admin = User.objects.first()
-        self.assertEqual(admin.username, 'zontax',
+        self.assertEqual(admin.first_name, 'Admin',
                          'Перевірка імені адміністратора')
         self.assertTrue(admin.is_superuser, 'Перевірка прав адміністатора')

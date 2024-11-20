@@ -40,18 +40,17 @@ class UserAdmin(ExtraButtonsMixin, admin.ModelAdmin):
                     'email', 'is_active']
     list_display_links = ['first_name']
     filter_horizontal = ['groups', 'user_permissions']
-    search_fields = ['username', 'first_name',
+    search_fields = ['first_name',
                      'last_name', 'email']
     list_filter = ['is_staff', 'is_active', 'date_joined']
     readonly_fields = ['id', 'email', 'password',
                        'date_joined', 'last_login', 'is_superuser']
     list_per_page = 20
     fields = [
-        'username',
+        ('email', 'password'),
         ('first_name', 'last_name'),
-        ('email', 'is_active'),
-        'is_staff',
-        ('last_login', 'date_joined')
+        ('is_staff', 'is_active'),
+        ('date_joined', 'last_login')
     ]
 
     def get_fields(self, request, obj=None):
@@ -71,8 +70,8 @@ class UserAdmin(ExtraButtonsMixin, admin.ModelAdmin):
                 # Якщо Celery недоступний, використай базову відправку для перевірки
                 tasks.send_email.delay(
                     to=obj.email,
-                    subject=f'Привіт {obj.username}',
-                    html_message=f'Це тестовий лист для {obj.username} з {settings.APP_NAME}',
+                    subject=f'Привіт {obj.get_full_name()}',
+                    html_message=f'Це тестовий лист для {obj.get_full_name()} з {settings.APP_NAME}',
                     message=settings.APP_NAME
                 )
                 self.message_user(
@@ -99,10 +98,10 @@ class ClientAdmin(admin.ModelAdmin):
     readonly_fields = ['last_login', 'date_joined']
     list_per_page = 20
     fields = [
-        ('password', 'username'),
+        ('email', 'password'),
         ('first_name', 'last_name'),
-        ('email', 'is_active'),
-        ('last_login', 'date_joined')
+        'is_active',
+        ('date_joined', 'last_login')
     ]
 
     def display_avatar(self, obj: Client):
@@ -137,10 +136,10 @@ class TrainerAdmin(admin.ModelAdmin):
     readonly_fields = ['last_login', 'date_joined']
     list_per_page = 20
     fields = [
-        ('password', 'username'),
+        ('email', 'password'),
         ('first_name', 'last_name'),
-        ('email', 'is_active'),
-        ('last_login', 'date_joined'),
+        'is_active',
+        ('date_joined', 'last_login')
     ]
 
     def display_avatar(self, obj: Trainer):
@@ -167,8 +166,15 @@ class TrainerAdmin(admin.ModelAdmin):
 class AdminAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name', 'email', 'is_active']
     list_filter = ['is_active']
+    readonly_fields = ('last_login', 'date_joined')
     search_fields = ['first_name', 'last_name', 'email']
     list_per_page = 20
+    fields = [
+        ('email', 'password'),
+        ('first_name', 'last_name'),
+        ('is_staff', 'is_active'),
+        ('date_joined', 'last_login')
+    ]
 
     def get_queryset(self, request):
         return super().get_queryset(request).filter(is_staff=True)

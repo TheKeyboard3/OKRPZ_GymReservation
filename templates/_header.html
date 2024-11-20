@@ -44,15 +44,8 @@
                         <ul class="dropdown-menu" aria-labelledby="navbarDarkDropdownMenuLink">
                             <li>
                                 <a class="dropdown-item" 
-                                    href="{% url 'user:detail' user.username %}">
-                                    Профіль 
-                                    {% if user.first_name %}
-                                        ({{ user.first_name }}{% if user.last_name %} {{ user.last_name }}{% endif %})
-                                    {% elif user.last_name %}
-                                        ({{ user.last_name }})
-                                    {% else %}
-                                        ({{ user.username }})
-                                    {% endif %}</a>
+                                    href="{% url 'user:detail' user.id %}">
+                                    Профіль ({{ user.first_name }} {{ user.last_name }})</a>
                             </li>
                             <hr class="dropdown-divider">
                             <li><a href="{% url 'user:logout' %}?next={{ request.path }}"

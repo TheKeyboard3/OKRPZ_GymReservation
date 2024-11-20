@@ -19,7 +19,7 @@ def change_params(context, **kwargs):
 
 @register.filter
 def get_item(dictionary: dict, key: str):
-    return dictionary.get(key)
+    return dictionary.get(key, None)
 
 
 @register.filter

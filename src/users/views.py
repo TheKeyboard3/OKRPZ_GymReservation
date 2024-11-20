@@ -1,18 +1,19 @@
-from django.http import HttpRequest
+from django.http import Http404, HttpRequest
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib import auth, messages
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, FormView
+from django.views.generic import FormView
 from django.views import View
 from core.settings.base import APP_NAME, MEDIA_ROOT, TOKEN_LIFETIME
 from main.tasks import send_email
 from main.services import create_image
+from booking.mixins import ClientOnlyMixin, TrainerOnlyMixin
 from users.tasks import clear_user_token
-from .models import User
-from .forms import UserEditForm, ClientProfileEditForm, UserLoginForm, ResetTokenForm, ResetPasswordForm, SetNewPasswordForm
-from .services import generate_token
+from users.models import User
+from users.forms import UserEditForm, UserLoginForm, ResetPasswordForm, SetNewPasswordForm, ClientProfileEditForm, TrainerProfileEditForm
+from users.services import generate_token
 
 
 class UserLoginView(LoginView):
@@ -28,8 +29,8 @@ class UserLoginView(LoginView):
         return reverse('booking:trainers')
 
 
-class ProfileView(LoginRequiredMixin, View):
-    template_name = 'users/profile.html'
+class ClientProfileChangeView(ClientOnlyMixin, View):
+    template_name = 'users/client_profile_change.html'
 
     def get(self, request: HttpRequest):
         user_form = UserEditForm(instance=request.user)
@@ -50,7 +51,38 @@ class ProfileView(LoginRequiredMixin, View):
         if form.is_valid() and profile_form.is_valid():
             form.save()
             profile_form.save()
-            messages.success(request, 'Дані користувача успішно змінено')
+            messages.success(request, 'Інформація успішно змінена')
+
+        context = {
+            'form': form,
+            'profile_form': profile_form,
+        }
+        return render(request, self.template_name, context)
+
+
+class TrainerProfileChangeView(TrainerOnlyMixin, View):
+    template_name = 'users/trainer_profile_change.html'
+
+    def get(self, request: HttpRequest):
+        user_form = UserEditForm(instance=request.user)
+        profile_form = TrainerProfileEditForm(instance=request.user.profile)
+
+        context = {
+            'form': user_form,
+            'profile_form': profile_form,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        form = UserEditForm(data=request.POST, instance=request.user)
+        profile_form = TrainerProfileEditForm(data=request.POST,
+                                             instance=request.user.profile,
+                                             files=request.FILES)
+
+        if form.is_valid() and profile_form.is_valid():
+            form.save()
+            profile_form.save()
+            messages.success(request, 'Інформація успішно змінена')
 
         context = {
             'form': form,
@@ -69,18 +101,6 @@ class LogoutView(View):
             auth.logout(request)
 
         return redirect(next_page)
-
-
-class ResetWaitView(FormView):
-    template_name = 'users/reset_wait.html'
-    form_class = ResetTokenForm
-    token: str
-
-    def form_valid(self, form):
-        self.token = form.cleaned_data['token']
-        self.success_url = reverse_lazy(
-            'user:register_confirm', kwargs={'token': self.token})
-        return super().form_valid(form)
 
 
 class RegisterConfirmView(View):
@@ -185,16 +205,16 @@ class PasswordResetConfirmView(FormView):
             return None
 
 
-class ProfileDetailView(DetailView):
+class ClientProfileDetailView(LoginRequiredMixin, View):
 
-    def get(self, request: HttpRequest, username):
-        user = get_object_or_404(User, username=username)
-        #total_followers = user.profile.followers.count()
-        #followers = user.profile.followers.all()
+    def get(self, request: HttpRequest, id):
+        user = get_object_or_404(User, id=id)
+
+        if not hasattr(user, 'client_profile'):
+            raise Http404('У цей користувач не є клієнтом')
+
         context = {
-            'title': user.username,
+            'title': user.get_full_name(),
             'detail_user': user,
-            #'total_followers': total_followers,
-            #'followers': followers,
         }
-        return render(request, 'users/user_detail.html', context)
+        return render(request, 'users/client_profile.html', context)
