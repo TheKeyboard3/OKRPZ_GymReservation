@@ -37,26 +37,40 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
                         trainer=trainer,
                         start_time__date=current_date).first()
 
+                    existing_reservation = Reservation.objects.filter(
+                        trainer=trainer,
+                        start_date__date=current_date
+                    ).exists()
+
+                    if existing_reservation:
+                        messages.warning(self.request,
+                                         f'{current_date.strftime("%d.%m.%Y")} вже є резервації. Розклад на цей день неможна змінювати')
+                        break
+
                     if update_schedule:
-                        update_schedule.start_time = datetime.combine(current_date, start_time)
-                        update_schedule.end_time = datetime.combine(current_date, end_time)
+                        update_schedule.start_time = datetime.combine(
+                            current_date, start_time)
+                        update_schedule.end_time = datetime.combine(
+                            current_date, end_time)
                         update_schedule.save()
-                        messages.success(self.request, 
-                                        f'Розклад на {current_date.day} число оновлено: {start_time}-{end_time}')
+                        messages.success(self.request,
+                                         f'Розклад на {current_date.day} число оновлено: {start_time}-{end_time}')
                     else:
                         WorkSchedule.objects.create(
                             trainer=trainer,
-                            start_time=datetime.combine(current_date, start_time),
+                            start_time=datetime.combine(
+                                current_date, start_time),
                             end_time=datetime.combine(current_date, end_time),
                         )
                         created_schedules.append(current_date)
-                        messages.success(self.request, 
-                                        f'Розклад на {current_date.day} число створено: {start_time}-{end_time}')
+                        messages.success(self.request,
+                                         f'Розклад на {current_date.day} число створено: {start_time}-{end_time}')
 
                 current_date += timedelta(days=1)
 
-            if not created_schedules:
-                messages.warning(self.request, 'Розклад не створено: проміжок вибраних днів не включає обраний день тижня')
+            if not created_schedules and not existing_reservation:
+                messages.warning(
+                    self.request, 'Розклад не створено: проміжок вибраних днів не включає обраний день тижня')
 
             return super().form_valid(form)
 

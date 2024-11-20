@@ -20,10 +20,10 @@
                     <div class="card-body">
                         <h5 class="card-title">
                             <text class="text-uppercase">
-                                {{ detail_user.get_full_name|default:detail_user.username }}
+                                {{ detail_user.get_full_name|default:detail_user.get_full_name }}
                             </text> 
                             <i class="bi bi-arrow-right-short"></i> 
-                            <text class="text-muted">{{ detail_user.username }}</text>
+                            <text class="text-muted">{{ detail_user.get_full_name }}</text>
                         </h5>
 
                         <div class="bio">
@@ -44,8 +44,10 @@
                         {% endif %}
 
                         {% if user.id == detail_user.id %}
-                            <a href="{% url 'user:profile' %}" class="btn btn-dark mr-3 float-right">
-                                <i class="bi bi-pencil-square"></i>
+                            <a href="{% url 'user:client_profile_change' %}" 
+                                class="btn btn-dark mr-3 float-right"
+                                title="Редагувати профіль користувача">
+                                Редагувати <i class="bi bi-pencil-square"></i>
                             </a>
                         {% endif %}
                     </div>

@@ -41,7 +41,7 @@ class TrainerDetailView(DetailView):
         trainer = get_object_or_404(TrainerProfile, user__id=id)
 
         context = {
-            'title': trainer.user.username,
+            'title': trainer.user.get_full_name(),
             'trainer': trainer,
         }
         return render(request, 'booking/trainer_detail.html', context)

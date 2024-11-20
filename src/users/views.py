@@ -28,8 +28,8 @@ class UserLoginView(LoginView):
         return reverse('booking:trainers')
 
 
-class ProfileView(LoginRequiredMixin, View):
-    template_name = 'users/profile.html'
+class ProfileChangeView(LoginRequiredMixin, View):
+    template_name = 'users/client_profile_change.html'
 
     def get(self, request: HttpRequest):
         user_form = UserEditForm(instance=request.user)
@@ -187,14 +187,10 @@ class PasswordResetConfirmView(FormView):
 
 class ProfileDetailView(DetailView):
 
-    def get(self, request: HttpRequest, username):
-        user = get_object_or_404(User, username=username)
-        #total_followers = user.profile.followers.count()
-        #followers = user.profile.followers.all()
+    def get(self, request: HttpRequest, id):
+        user = get_object_or_404(User, id=id)
         context = {
-            'title': user.username,
+            'title': user.get_full_name(),
             'detail_user': user,
-            #'total_followers': total_followers,
-            #'followers': followers,
         }
-        return render(request, 'users/user_detail.html', context)
+        return render(request, 'users/client_profile.html', context)

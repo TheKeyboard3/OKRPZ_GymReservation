@@ -40,7 +40,7 @@ class UserAdmin(ExtraButtonsMixin, admin.ModelAdmin):
                     'email', 'is_active']
     list_display_links = ['first_name']
     filter_horizontal = ['groups', 'user_permissions']
-    search_fields = ['username', 'first_name',
+    search_fields = ['first_name',
                      'last_name', 'email']
     list_filter = ['is_staff', 'is_active', 'date_joined']
     readonly_fields = ['id', 'email', 'password',
@@ -70,8 +70,8 @@ class UserAdmin(ExtraButtonsMixin, admin.ModelAdmin):
                 # Якщо Celery недоступний, використай базову відправку для перевірки
                 tasks.send_email.delay(
                     to=obj.email,
-                    subject=f'Привіт {obj.username}',
-                    html_message=f'Це тестовий лист для {obj.username} з {settings.APP_NAME}',
+                    subject=f'Привіт {obj.get_full_name()}',
+                    html_message=f'Це тестовий лист для {obj.get_full_name()} з {settings.APP_NAME}',
                     message=settings.APP_NAME
                 )
                 self.message_user(

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static main_tags %}
+
+{% block title %}
+    <title>{{ user.get_full_name }} - Профіль тренера</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="bg-white mt-5 mb-4 p-4 rounded">
+            <h3 class="text-center mb-4">Профіль тренера</h3>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

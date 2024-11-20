@@ -2,7 +2,7 @@
 {% load static main_tags %}
 
 {% block title %}
-    <title>{{ user.username }} - Профіль</title>
+    <title>{{ user.get_full_name }} - Профіль клієнта</title>
 {% endblock %}
 
 {% block content %}
@@ -10,7 +10,7 @@
 <div class="row">
     <div class="col-md-5">
         <div class="bg-white mt-5 mb-4 p-4 rounded">
-            <h3 class="text-center mb-4">Профіль користувача</h3>
+            <h3 class="text-center mb-4">Профіль клієнта</h3>
             
             <form id="profile-form" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -74,8 +74,7 @@
                             value="{{ form.username.value|default:'' }}" 
                             id="id_username"
                             name="username"
-                            placeholder="Введіть ваше ім'я користувача" 
-                            required>
+                            placeholder="Введіть ваше ім'я користувача">
 
                         {% if form.username.errors %}
                             <div class="alert alert-danger alert-dismissible fade show">
@@ -138,7 +137,7 @@
                 </div>
                 <button type="submit" class="btn btn-success">Зберегти</button>
                 
-                <a class="btn btn-dark float-right" href="{% url 'user:detail' user.username %}">
+                <a class="btn btn-dark float-right" href="{% url 'user:detail' user.id %}">
                     Дивитись профіль
                 </a>
             </form>

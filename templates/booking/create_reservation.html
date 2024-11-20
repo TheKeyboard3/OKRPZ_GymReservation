@@ -86,23 +86,34 @@
                 </form>
             </div>
 
-            <div class="col-md-4 bg-white p-4 mx-3 rounded">
+            <div class="col-md-6 bg-white p-4 rounded">
                 <h4>Розклад тренера</h4>
-                <ul class="list-group list-group-flush">
-                    {% for schedule in trainer.work_schedules.all %}
-                        <li class="list-group-item">
-                            {{ schedule.get_day_of_week_display }}
-
-                            <r class="float-right">
-
-                                {% if current_day == schedule.day_of_week %}
-                                    <r class="text-muted">Сьогодні</r>
-                                {% endif %}
-                                {{ schedule.start_time|date:"H:i" }} - {{ schedule.end_time|date:"H:i" }}
-                            </r>
-                        </li>
-                    {% endfor %}
-                </ul>
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            {% for day in schedule_days %}
+                                <th>{{ day|date:"D" }}<br>{{ day|date:"d.m" }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% for day in schedule_days %}
+                                <td>
+                                    {% with schedule_by_day|get_item:day as schedules %}
+                                        {% if schedules %}
+                                            {% for schedule in schedules %}
+                                                <p>{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:"H:i" }}</p>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p>Немає розкладу</p>
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             
             {% if user_reservations %}
