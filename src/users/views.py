@@ -28,7 +28,7 @@ class UserLoginView(LoginView):
         return reverse('booking:trainers')
 
 
-class ProfileChangeView(LoginRequiredMixin, View):
+class ClientProfileChangeView(LoginRequiredMixin, View):
     template_name = 'users/client_profile_change.html'
 
     def get(self, request: HttpRequest):
@@ -57,6 +57,17 @@ class ProfileChangeView(LoginRequiredMixin, View):
             'profile_form': profile_form,
         }
         return render(request, self.template_name, context)
+
+
+class TrainerProfileChangeView(LoginRequiredMixin, View):
+    template_name = 'users/trainer_profile_change.html'
+
+    def get(self, request: HttpRequest):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        
+        return render(request, self.template_name)
 
 
 class LogoutView(View):

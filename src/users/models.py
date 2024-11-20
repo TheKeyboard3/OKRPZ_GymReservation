@@ -72,7 +72,7 @@ class Client(User):
         verbose_name_plural = 'Клієнти'
 
     def get_absolute_url(self):
-        return reverse('user:detail', args=[self.username])
+        return reverse('user:detail', args=[self.id])
 
 
 class Trainer(User):
