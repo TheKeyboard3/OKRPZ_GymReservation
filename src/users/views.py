@@ -9,10 +9,10 @@ from django.views import View
 from core.settings.base import APP_NAME, MEDIA_ROOT, TOKEN_LIFETIME
 from main.tasks import send_email
 from main.services import create_image
-from booking.mixins import ClientOnlyMixin
+from booking.mixins import ClientOnlyMixin, TrainerOnlyMixin
 from users.tasks import clear_user_token
 from users.models import User
-from users.forms import UserEditForm, ClientProfileEditForm, UserLoginForm, ResetTokenForm, ResetPasswordForm, SetNewPasswordForm
+from users.forms import UserEditForm, UserLoginForm, ResetPasswordForm, SetNewPasswordForm, ClientProfileEditForm, TrainerProfileEditForm
 from users.services import generate_token
 
 
@@ -51,7 +51,7 @@ class ClientProfileChangeView(ClientOnlyMixin, View):
         if form.is_valid() and profile_form.is_valid():
             form.save()
             profile_form.save()
-            messages.success(request, 'Дані користувача успішно змінено')
+            messages.success(request, 'Інформація успішно змінена')
 
         context = {
             'form': form,
@@ -60,15 +60,35 @@ class ClientProfileChangeView(ClientOnlyMixin, View):
         return render(request, self.template_name, context)
 
 
-class TrainerProfileChangeView(LoginRequiredMixin, View):
+class TrainerProfileChangeView(TrainerOnlyMixin, View):
     template_name = 'users/trainer_profile_change.html'
 
     def get(self, request: HttpRequest):
-        return render(request, self.template_name)
+        user_form = UserEditForm(instance=request.user)
+        profile_form = TrainerProfileEditForm(instance=request.user.profile)
+
+        context = {
+            'form': user_form,
+            'profile_form': profile_form,
+        }
+        return render(request, self.template_name, context)
 
     def post(self, request):
+        form = UserEditForm(data=request.POST, instance=request.user)
+        profile_form = TrainerProfileEditForm(data=request.POST,
+                                             instance=request.user.profile,
+                                             files=request.FILES)
 
-        return render(request, self.template_name)
+        if form.is_valid() and profile_form.is_valid():
+            form.save()
+            profile_form.save()
+            messages.success(request, 'Інформація успішно змінена')
+
+        context = {
+            'form': form,
+            'profile_form': profile_form,
+        }
+        return render(request, self.template_name, context)
 
 
 class LogoutView(View):
