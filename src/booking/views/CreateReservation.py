@@ -20,15 +20,17 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        selected_date = datetime.strptime(
-            self.request.GET.get('date'), '%Y-%m-%d').date()
-        trainer = TrainerProfile.objects.get(user__id=self.kwargs['id'])
         yesterday = datetime.today()
+        selected_date = self.request.GET.get('date',
+                                             yesterday.strftime('%Y-%m-%d'))
+        selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
         min_day_value = yesterday.strftime('%Y-%m-%d')
 
-        # Робочий графік тренера на конкретну дату
+        trainer = TrainerProfile.objects.get(user__id=self.kwargs['id'])
+
         work_schedules = WorkSchedule.objects.filter(
-            trainer=trainer, start_time__date=selected_date
+            trainer=trainer,
+            start_time__date=selected_date
         ).order_by('start_time')
 
         if not work_schedules.exists():
