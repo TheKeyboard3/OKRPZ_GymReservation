@@ -6,7 +6,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponseBadRequest
 from django.utils.timezone import datetime
 
-from core.settings.base import APP_NAME, EMAIL_HOST_USER
+from core.settings.base import APP_NAME, SITE_SUPPORT_EMAIL
 from main.tasks import send_email
 from users.models import TrainerProfile
 from booking.models import Reservation, WorkSchedule
@@ -38,7 +38,7 @@ class RemoveWorkSchedule(AdminOnlyMixin, View):
                     <h2>Скасування резервації ({APP_NAME})</h2>
                     <p>{reservation.client.user.first_name}, ваша резервація на <strong>{reservation.start_date.strftime('%d.%m.%Y')}</strong> була скасована</p>
                     <p><strong>Проміжок часу:</strong> {reservation.start_date.strftime('%H:%M')} - {reservation.end_date.strftime('%H:%M')}</p>
-                    <p>Якщо у вас є питання, звертайтесь до нашої служби підтримки. {EMAIL_HOST_USER}</p>
+                    <p>Якщо у вас є питання, звертайтесь до нашої служби підтримки. {SITE_SUPPORT_EMAIL}</p>
                     <p><a href="">Більше на сайті</a></p>"""
             )
 

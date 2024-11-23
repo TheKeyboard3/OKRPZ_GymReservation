@@ -513,61 +513,6 @@ docs = ["markdown-include", "mdx_gh_links", "mkdocs", "mkdocs-material", "mkdocs
 test = ["coverage", "django_webtest", "factory-boy", "pdbpp", "pyquery", "pytest", "pytest-cov", "pytest-django", "pytest-echo", "tox (>=2.3)", "wheel"]
 
 [[package]]
-name = "django-admin-interface"
-version = "0.28.9"
-description = "django's default admin interface with superpowers - customizable themes, popup windows replaced by modals and many other features."
-optional = false
-python-versions = "*"
-files = [
-    {file = "django_admin_interface-0.28.9-py3-none-any.whl", hash = "sha256:950051638389abbe14aa3a2ea58fc5278c4155473d8b0885d0403e454848515a"},
-    {file = "django_admin_interface-0.28.9.tar.gz", hash = "sha256:686945a03ee24894dedbeb2b53dafc2f23d3b0990ff11433163f29c93e3a88bb"},
-]
-
-[package.dependencies]
-django-colorfield = ">=0.8.0,<1.0.0"
-python-slugify = ">=7.0.0,<9.0.0"
-
-[[package]]
-name = "django-adminactions"
-version = "2.3.0"
-description = "Collections of useful actions to use with django.contrib.admin.ModelAdmin"
-optional = false
-python-versions = "*"
-files = [
-    {file = "django-adminactions-2.3.0.tar.gz", hash = "sha256:461533a8a47f2c260b0669ee14eb1fdf345d066348c8ff573a65ca0e102d81c9"},
-]
-
-[package.dependencies]
-pytz = "*"
-xlrd = ">=0.9.2"
-xlwt = "*"
-
-[package.extras]
-dev = ["black", "celery", "check-manifest", "django (<4)", "django-admin-extra-urls", "django-dynamic-fixture", "django-environ", "django-webtest (>1.9.6)", "docutils", "flake8", "flake8-isort", "isort", "mock (>=1.0.1)", "modernize", "pdbpp", "pillow", "pytest", "pytest-cache", "pytest-cov", "pytest-django", "pytest-echo", "readme", "redis", "selenium (>=2.42.0)", "setuptools (>=15.0)", "tox (<4)", "virtualenv", "wheel"]
-docs = ["black", "check-manifest", "django", "django (<4)", "docutils", "pdbpp", "sphinx", "sphinx_rtd_theme", "virtualenv", "wheel"]
-test = ["black", "celery", "check-manifest", "django-admin-extra-urls", "django-dynamic-fixture", "django-environ", "django-webtest (>1.9.6)", "flake8", "flake8-isort", "isort", "mock (>=1.0.1)", "modernize", "pillow", "pytest", "pytest-cache", "pytest-cov", "pytest-django", "pytest-echo", "pytz", "readme", "redis", "selenium (>=2.42.0)", "setuptools (>=15.0)", "tox (<4)", "xlrd (>=0.9.2)", "xlwt"]
-
-[[package]]
-name = "django-allauth"
-version = "0.63.6"
-description = "Integrated set of Django applications addressing authentication, registration, account management as well as 3rd party (social) account authentication."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "django_allauth-0.63.6.tar.gz", hash = "sha256:f15f49defb09e0604dad5214e53a69a1f723cb03176bb115c8930bcd19b91749"},
-]
-
-[package.dependencies]
-Django = ">=3.2"
-
-[package.extras]
-mfa = ["qrcode (>=7.0.0)"]
-openid = ["python3-openid (>=3.0.8)"]
-saml = ["python3-saml (>=1.15.0,<2.0.0)"]
-socialaccount = ["pyjwt[crypto] (>=1.7)", "requests (>=2.0.0)", "requests-oauthlib (>=0.3.0)"]
-steam = ["python3-openid (>=3.0.8)"]
-
-[[package]]
 name = "django-appconf"
 version = "1.0.6"
 description = "A helper class for handling configuration defaults of packaged apps gracefully."
@@ -597,20 +542,6 @@ Django = ">=4.2"
 
 [package.extras]
 jinja = ["Jinja2 (>=3.0,<4)"]
-
-[[package]]
-name = "django-colorfield"
-version = "0.11.0"
-description = "color field for django models with a nice color-picker in the admin."
-optional = false
-python-versions = "*"
-files = [
-    {file = "django-colorfield-0.11.0.tar.gz", hash = "sha256:05c38c8eb2a94938b810a19b2011846391a4ce71d1c92e88a35974fbcc8fc62e"},
-    {file = "django_colorfield-0.11.0-py3-none-any.whl", hash = "sha256:460f40e6123b6ae0fb51a4eb86fc258fcdc0ea28f75102b685e8209b1eae9ec3"},
-]
-
-[package.dependencies]
-Pillow = ">=9.0.0"
 
 [[package]]
 name = "django-compressor"
@@ -761,16 +692,6 @@ xlsx = ["tablib[xlsx] (==3.5.0)"]
 yaml = ["tablib[yaml] (==3.5.0)"]
 
 [[package]]
-name = "django-json-widget"
-version = "2.0.1"
-description = "Django json widget is an alternative widget that makes it easy to edit the jsonfield field of django."
-optional = false
-python-versions = "*"
-files = [
-    {file = "django-json-widget-2.0.1.tar.gz", hash = "sha256:adb4cab17fe5a04139037d7d84725369530ef35b912c3790d3a7b13f99351358"},
-]
-
-[[package]]
 name = "django-phonenumber-field"
 version = "7.3.0"
 description = "An international phone number field for django models."
@@ -787,19 +708,6 @@ Django = ">=3.2"
 [package.extras]
 phonenumbers = ["phonenumbers (>=7.0.2)"]
 phonenumberslite = ["phonenumberslite (>=7.0.2)"]
-
-[[package]]
-name = "django-ranged-response"
-version = "0.2.0"
-description = "Modified Django FileResponse that adds Content-Range headers."
-optional = false
-python-versions = "*"
-files = [
-    {file = "django-ranged-response-0.2.0.tar.gz", hash = "sha256:f71fff352a37316b9bead717fc76e4ddd6c9b99c4680cdf4783b9755af1cf985"},
-]
-
-[package.dependencies]
-django = "*"
 
 [[package]]
 name = "django-recaptcha"
@@ -847,39 +755,6 @@ gprof2dot = ">=2017.09.19"
 sqlparse = "*"
 
 [[package]]
-name = "django-simple-captcha"
-version = "0.6.0"
-description = "A very simple, yet powerful, Django captcha application"
-optional = false
-python-versions = "*"
-files = [
-    {file = "django-simple-captcha-0.6.0.tar.gz", hash = "sha256:d188516d326fadd2d5ad076eb89649d55c02cabafe3fdcc2154ac18e9f6d4b97"},
-    {file = "django_simple_captcha-0.6.0-py2.py3-none-any.whl", hash = "sha256:3ae9a7e650cb0cdbcfd4a75aa91fdf25dcc523ef541a7b1f004bd4357798fc03"},
-]
-
-[package.dependencies]
-Django = ">=4.2"
-django-ranged-response = "0.2.0"
-Pillow = ">=6.2.0"
-
-[package.extras]
-test = ["testfixtures"]
-
-[[package]]
-name = "django-tinymce"
-version = "4.1.0"
-description = "A Django application that contains a widget to render a"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "django_tinymce-4.1.0-py3-none-any.whl", hash = "sha256:9804836e6d2b08de3b03a27c100f8c2e9633549913eff8b323678a10cd48b94e"},
-    {file = "django_tinymce-4.1.0.tar.gz", hash = "sha256:02e3b70e940fd299f0fbef4315aee5c185664e1eb8cd396b176963954e4357c9"},
-]
-
-[package.dependencies]
-django = ">=3.2"
-
-[[package]]
 name = "djangorestframework"
 version = "3.15.2"
 description = "Web APIs for Django, made easy."
@@ -892,26 +767,6 @@ files = [
 
 [package.dependencies]
 django = ">=4.2"
-
-[[package]]
-name = "dnspython"
-version = "2.6.1"
-description = "DNS toolkit"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "dnspython-2.6.1-py3-none-any.whl", hash = "sha256:5ef3b9680161f6fa89daf8ad451b5f1a33b18ae8a1c6778cdf4b43f08c0a6e50"},
-    {file = "dnspython-2.6.1.tar.gz", hash = "sha256:e8f0f9c23a7b7cb99ded64e6c3a6f3e701d78f50c55e002b839dea7225cff7cc"},
-]
-
-[package.extras]
-dev = ["black (>=23.1.0)", "coverage (>=7.0)", "flake8 (>=7)", "mypy (>=1.8)", "pylint (>=3)", "pytest (>=7.4)", "pytest-cov (>=4.1.0)", "sphinx (>=7.2.0)", "twine (>=4.0.0)", "wheel (>=0.42.0)"]
-dnssec = ["cryptography (>=41)"]
-doh = ["h2 (>=4.1.0)", "httpcore (>=1.0.0)", "httpx (>=0.26.0)"]
-doq = ["aioquic (>=0.9.25)"]
-idna = ["idna (>=3.6)"]
-trio = ["trio (>=0.23)"]
-wmi = ["wmi (>=1.5.1)"]
 
 [[package]]
 name = "drf-spectacular"
@@ -935,21 +790,6 @@ uritemplate = ">=2.0.0"
 [package.extras]
 offline = ["drf-spectacular-sidecar"]
 sidecar = ["drf-spectacular-sidecar"]
-
-[[package]]
-name = "email-validator"
-version = "2.2.0"
-description = "A robust email address syntax and deliverability validation library."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "email_validator-2.2.0-py3-none-any.whl", hash = "sha256:561977c2d73ce3611850a06fa56b414621e0c8faa9d66f2611407d87465da631"},
-    {file = "email_validator-2.2.0.tar.gz", hash = "sha256:cb690f344c617a714f22e66ae771445a1ceb46821152df8e165c5f9a364582b7"},
-]
-
-[package.dependencies]
-dnspython = ">=2.0.0"
-idna = ">=2.0.0"
 
 [[package]]
 name = "flower"
@@ -1156,21 +996,6 @@ sqlalchemy = ["sqlalchemy (>=1.4.48,<2.1)"]
 sqs = ["boto3 (>=1.26.143)", "pycurl (>=7.43.0.5)", "urllib3 (>=1.26.16)"]
 yaml = ["PyYAML (>=3.10)"]
 zookeeper = ["kazoo (>=2.8.0)"]
-
-[[package]]
-name = "libsass"
-version = "0.23.0"
-description = "Sass for Python: A straightforward binding of libsass for Python."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "libsass-0.23.0-cp38-abi3-macosx_11_0_x86_64.whl", hash = "sha256:34cae047cbbfc4ffa832a61cbb110f3c95f5471c6170c842d3fed161e40814dc"},
-    {file = "libsass-0.23.0-cp38-abi3-macosx_14_0_arm64.whl", hash = "sha256:ea97d1b45cdc2fc3590cb9d7b60f1d8915d3ce17a98c1f2d4dd47ee0d9c68ce6"},
-    {file = "libsass-0.23.0-cp38-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:4a218406d605f325d234e4678bd57126a66a88841cb95bee2caeafdc6f138306"},
-    {file = "libsass-0.23.0-cp38-abi3-win32.whl", hash = "sha256:31e86d92a5c7a551df844b72d83fc2b5e50abc6fbbb31e296f7bebd6489ed1b4"},
-    {file = "libsass-0.23.0-cp38-abi3-win_amd64.whl", hash = "sha256:a2ec85d819f353cbe807432d7275d653710d12b08ec7ef61c124a580a8352f3c"},
-    {file = "libsass-0.23.0.tar.gz", hash = "sha256:6f209955ede26684e76912caf329f4ccb57e4a043fd77fe0e7348dd9574f1880"},
-]
 
 [[package]]
 name = "markdown"
@@ -1697,23 +1522,6 @@ files = [
 
 [package.dependencies]
 six = ">=1.5"
-
-[[package]]
-name = "python-slugify"
-version = "8.0.4"
-description = "A Python slugify application that also handles Unicode"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "python-slugify-8.0.4.tar.gz", hash = "sha256:59202371d1d05b54a9e7720c5e038f928f45daaffe41dd10822f3907b937c856"},
-    {file = "python_slugify-8.0.4-py2.py3-none-any.whl", hash = "sha256:276540b79961052b66b7d116620b36518847f52d5fd9e3a70164fc8c50faa6b8"},
-]
-
-[package.dependencies]
-text-unidecode = ">=1.3"
-
-[package.extras]
-unidecode = ["Unidecode (>=1.1.1)"]
 
 [[package]]
 name = "pytils"
@@ -2263,17 +2071,6 @@ files = [
 tests = ["pytest", "pytest-cov"]
 
 [[package]]
-name = "text-unidecode"
-version = "1.3"
-description = "The most basic Text::Unidecode port"
-optional = false
-python-versions = "*"
-files = [
-    {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
-    {file = "text_unidecode-1.3-py2.py3-none-any.whl", hash = "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8"},
-]
-
-[[package]]
 name = "tornado"
 version = "6.4.1"
 description = "Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed."
@@ -2350,17 +2147,6 @@ files = [
 ]
 
 [[package]]
-name = "ua-parser"
-version = "0.18.0"
-description = "Python port of Browserscope's user agent parser"
-optional = false
-python-versions = "*"
-files = [
-    {file = "ua-parser-0.18.0.tar.gz", hash = "sha256:db51f1b59bfaa82ed9e2a1d99a54d3e4153dddf99ac1435d51828165422e624e"},
-    {file = "ua_parser-0.18.0-py2.py3-none-any.whl", hash = "sha256:9d94ac3a80bcb0166823956a779186c746b50ea4c9fd9bf30fdb758553c38950"},
-]
-
-[[package]]
 name = "uritemplate"
 version = "4.1.1"
 description = "Implementation of RFC 6570 URI Templates"
@@ -2390,20 +2176,6 @@ brotli = ["brotli (>=1.0.9)", "brotlicffi (>=0.8.0)"]
 h2 = ["h2 (>=4,<5)"]
 socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["zstandard (>=0.18.0)"]
-
-[[package]]
-name = "user-agents"
-version = "2.2.0"
-description = "A library to identify devices (phones, tablets) and their capabilities by parsing browser user agent strings."
-optional = false
-python-versions = "*"
-files = [
-    {file = "user-agents-2.2.0.tar.gz", hash = "sha256:d36d25178db65308d1458c5fa4ab39c9b2619377010130329f3955e7626ead26"},
-    {file = "user_agents-2.2.0-py3-none-any.whl", hash = "sha256:a98c4dc72ecbc64812c4534108806fb0a0b3a11ec3fd1eafe807cee5b0a942e7"},
-]
-
-[package.dependencies]
-ua-parser = ">=0.10.0"
 
 [[package]]
 name = "vine"
@@ -2485,34 +2257,7 @@ files = [
 [package.dependencies]
 h11 = ">=0.9.0,<1"
 
-[[package]]
-name = "xlrd"
-version = "2.0.1"
-description = "Library for developers to extract data from Microsoft Excel (tm) .xls spreadsheet files"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
-files = [
-    {file = "xlrd-2.0.1-py2.py3-none-any.whl", hash = "sha256:6a33ee89877bd9abc1158129f6e94be74e2679636b8a205b43b85206c3f0bbdd"},
-    {file = "xlrd-2.0.1.tar.gz", hash = "sha256:f72f148f54442c6b056bf931dbc34f986fd0c3b0b6b5a58d013c9aef274d0c88"},
-]
-
-[package.extras]
-build = ["twine", "wheel"]
-docs = ["sphinx"]
-test = ["pytest", "pytest-cov"]
-
-[[package]]
-name = "xlwt"
-version = "1.3.0"
-description = "Library to create spreadsheet files compatible with MS Excel 97/2000/XP/2003 XLS files, on any platform, with Python 2.6, 2.7, 3.3+"
-optional = false
-python-versions = "*"
-files = [
-    {file = "xlwt-1.3.0-py2.py3-none-any.whl", hash = "sha256:a082260524678ba48a297d922cc385f58278b8aa68741596a87de01a9c628b2e"},
-    {file = "xlwt-1.3.0.tar.gz", hash = "sha256:c59912717a9b28f1a3c2a98fd60741014b06b043936dcecbc113eaaada156c88"},
-]
-
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d629bd7451ba935de3b1fa4703805ded32d61d3c430d5aa2db70f949660fb05f"
+content-hash = "105258796abf7dd3c0ed2ea77f99c6daea64c115e642e7bf60f1944e6a4ce7b2"

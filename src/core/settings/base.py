@@ -19,7 +19,6 @@ ASGI_APPLICATION = 'core.asgi.application'
 WSGI_APPLICATION = 'core.wsgi.application'
 
 INSTALLED_APPS = [
-    'adminactions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -35,7 +34,6 @@ INSTALLED_APPS = [
     'main',
     'users',
     'booking',
-    'api',
 ]
 
 if DEBUG_TOOLBAR:
@@ -47,7 +45,6 @@ INSTALLED_APPS += [
     'drf_spectacular',
     'django_bootstrap5',
     'compressor',
-    'colorfield',
     'phonenumber_field',
     'image_uploader_widget',
     'django_recaptcha',

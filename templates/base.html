@@ -10,11 +10,6 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/post-card.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/post-detail.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/ck-content.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/popup-text.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/prism.css' %}" />
 
     {% block css %}
     {% endblock %}
@@ -46,13 +41,10 @@
         {% include '_footer.html' %}
     </div>
 
-    <script src="{% static 'js/prism.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/jquery.validate.min.js' %}"></script>
-    <script src="{% static 'js/htmx.min.js' %}"></script>
-    <script src="{% static 'js/htmx-ws.js' %}"></script>
     <script src="{% static 'js/base.js' %}"></script>
     
     {% block script %}
