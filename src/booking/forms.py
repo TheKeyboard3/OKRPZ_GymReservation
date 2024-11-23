@@ -8,45 +8,13 @@ from booking.models import Reservation, Departament, WeekdayEnum
 
 class CreateReservationForm(Form):
     trainer_id = IntegerField(widget=HiddenInput())
-    start_date = DateTimeField(input_formats=['%Y-%m-%dT%H:%M'])
-    end_date = DateTimeField(input_formats=['%Y-%m-%dT%H:%M'])
-    departament_id = ChoiceField()
+    date = DateField()
+    time_slot = ChoiceField()
 
-    def clean_start_date(self):
-        start_date = self.cleaned_data['start_date']
-        current_time = localtime(now())
-        
-        if start_date < current_time:
-            raise ValidationError("Час початку не може бути в минулому.")
-        
-        return start_date
-
-    def clean_end_date(self):
-        start_date = self.cleaned_data.get('start_date')
-        end_date = self.cleaned_data['end_date']
-        
-        if start_date and end_date <= start_date:
-            raise ValidationError("Час закінчення має бути пізніше за час початку.")
-        
-        return end_date
-
-    def clean(self):
-        cleaned_data = super().clean()
-        start_date = cleaned_data.get('start_date')
-        end_date = cleaned_data.get('end_date')
-        trainer_id = cleaned_data.get('trainer_id')
-        
-        if start_date and end_date and trainer_id:
-            # Перевірка на наявність перекриттів з іншими резерваціями
-            overlapping_reservations = Reservation.objects.filter(
-                trainer__id=trainer_id,
-                start_date__lt=end_date,
-                end_date__gt=start_date
-            )
-            if overlapping_reservations.exists():
-                raise ValidationError("Цей час вже зайнятий іншим клієнтом.")
-
-        return cleaned_data
+    def __init__(self, *args, **kwargs):
+        available_slots = kwargs.pop('available_slots', [])
+        super().__init__(*args, **kwargs)
+        self.fields['time_slot'].choices = [(slot, slot) for slot in available_slots]
 
 
 class CreateWorkSheduleForm(Form):
