@@ -1,30 +1,11 @@
+from smtplib import SMTPException, SMTPResponseException
 from django.core.mail import send_mail
-from django.core.management import call_command
 from django.http import BadHeaderError
 from django.conf import settings
-
 from celery import shared_task
 from celery.utils.log import get_task_logger
-from celery.schedules import crontab
-from smtplib import SMTPException, SMTPResponseException
 
 logger = get_task_logger(__name__)
-
-
-# beat_schedule = {
-#     'every': {
-#         'task': 'main.tasks.test',
-#         'schedule': crontab('*/1'),
-#     },
-# }
-
-# @periodic_task(run_every=(hour=0, minute=0), name='test')
-
-
-@shared_task()
-def test():
-    print('Task test')
-    logger.info('Task test')
 
 
 @shared_task()

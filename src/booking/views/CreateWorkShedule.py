@@ -33,10 +33,7 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
 
             while current_date <= end_date:
                 if current_date.weekday() == weekday:
-                    update_schedule = WorkSchedule.objects.filter(
-                        trainer=trainer,
-                        start_time__date=current_date).first()
-
+                    # Перевірка на існуючу резервацію для поточної дати
                     existing_reservation = Reservation.objects.filter(
                         trainer=trainer,
                         start_date__date=current_date
@@ -45,30 +42,34 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
                     if existing_reservation:
                         messages.warning(self.request,
                                          f'{current_date.strftime("%d.%m.%Y")} вже є резервації. Розклад на цей день неможна змінювати')
-                        break
-
-                    if update_schedule:
-                        update_schedule.start_time = datetime.combine(
-                            current_date, start_time)
-                        update_schedule.end_time = datetime.combine(
-                            current_date, end_time)
-                        update_schedule.save()
-                        messages.success(self.request,
-                                         f'Розклад на {current_date.day} число оновлено: {start_time}-{end_time}')
                     else:
-                        WorkSchedule.objects.create(
+                        update_schedule = WorkSchedule.objects.filter(
                             trainer=trainer,
-                            start_time=datetime.combine(
-                                current_date, start_time),
-                            end_time=datetime.combine(current_date, end_time),
-                        )
-                        created_schedules.append(current_date)
-                        messages.success(self.request,
-                                         f'Розклад на {current_date.day} число створено: {start_time}-{end_time}')
+                            start_time__date=current_date).first()
+
+                        if update_schedule:
+                            update_schedule.start_time = datetime.combine(
+                                current_date, start_time)
+                            update_schedule.end_time = datetime.combine(
+                                current_date, end_time)
+                            update_schedule.save()
+                            messages.success(self.request,
+                                             f'Розклад на {current_date.day} число оновлено: {start_time}-{end_time}')
+                        else:
+                            WorkSchedule.objects.create(
+                                trainer=trainer,
+                                start_time=datetime.combine(
+                                    current_date, start_time),
+                                end_time=datetime.combine(
+                                    current_date, end_time),
+                            )
+                            created_schedules.append(current_date)
+                            messages.success(self.request,
+                                             f'Розклад на {current_date.day} число створено: {start_time}-{end_time}')
 
                 current_date += timedelta(days=1)
 
-            if not created_schedules and not existing_reservation:
+            if not created_schedules:
                 messages.warning(
                     self.request, 'Розклад не створено: проміжок вибраних днів не включає обраний день тижня')
 
@@ -76,7 +77,6 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
 
         except TrainerProfile.DoesNotExist:
             messages.error(self.request, 'Такого тренера не існує!')
-            logger.error("Trainer profile not found.")
             return self.form_invalid(form)
 
     def form_invalid(self, form: CreateWorkSheduleForm):

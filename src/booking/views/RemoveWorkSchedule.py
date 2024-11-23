@@ -18,35 +18,32 @@ logger = logging.getLogger(__name__)
 class RemoveWorkSchedule(AdminOnlyMixin, View):
     def get(self, request, id: int, date: str, *args, **kwargs):
         try:
-            # Перевірка формату дати
             target_date = datetime.strptime(date, '%Y-%m-%d').date()
         except ValueError:
             return HttpResponseBadRequest('Неправильний формат дати. Очікується YYYY-MM-DD')
 
-        # Отримуємо тренера
         trainer = get_object_or_404(TrainerProfile, user__id=id)
 
-        # Отримуємо всі резервації для цього розкладу
         reservations = Reservation.objects.filter(
             trainer=trainer,
             start_date__date=target_date
         )
 
         for reservation in reservations:
-            send_email(
+            send_email.delay(
                 to=reservation.client.user.email,
                 subject=f'Скасування резервації ({APP_NAME})',
-                message=f'Скасування резервації ({APP_NAME})',
+                message=f'{reservation.client.user.first_name}, ваша резервація на {reservation.start_date.strftime("%d.%m.%Y")} була скасована',
                 html_message=f"""
                     <h2>Скасування резервації ({APP_NAME})</h2>
-                    <p>{reservation.client.user.first_name}, ваша резервація на {reservation.start_date.strftime('%Y-%m-%d %H')} була скасована</p>
+                    <p>{reservation.client.user.first_name}, ваша резервація на <strong>{reservation.start_date.strftime('%d.%m.%Y')}</strong> була скасована</p>
+                    <p><strong>Проміжок часу:</strong> {reservation.start_date.strftime('%H:%M')} - {reservation.end_date.strftime('%H:%M')}</p>
+                    <p>Якщо у вас є питання, звертайтесь до нашої служби підтримки. {EMAIL_HOST_USER}</p>
                     <p><a href="">Більше на сайті</a></p>"""
             )
 
-        # Видаляємо резервації
         reservations_deleted_count, _ = reservations.delete()
 
-        # Видаляємо розклад
         deleted_count, _ = WorkSchedule.objects.filter(
             trainer=trainer,
             start_time__date=target_date
@@ -56,6 +53,6 @@ class RemoveWorkSchedule(AdminOnlyMixin, View):
             return redirect(reverse('booking:shedule_add', kwargs={'id': id}))
 
         if reservations_deleted_count > 0:
-            return HttpResponseBadRequest('Резервації були видалені, але розклад не знайдено.')
+            return HttpResponseBadRequest('Резервації були видалені, але розклад не знайдено')
         
         return HttpResponseBadRequest('Розклад для вказаної дати не знайдено')
