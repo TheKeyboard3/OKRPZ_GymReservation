@@ -48,9 +48,9 @@ def send_email(to: str | list[str],
             recipient_list=recipient_list,
             fail_silently=False)
 
-        logger.info('Send email success')
+        logger.info(f'Send email to {to} success')
         return True
 
     except (BadHeaderError, SMTPException, SMTPResponseException) as ex:
-        logger.error(f'Send email error: {ex}')
+        logger.error(f'Send email to {to} error: {ex}')
         return False

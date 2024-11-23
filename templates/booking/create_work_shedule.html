@@ -107,10 +107,15 @@
                                 {% with schedule_by_day|get_item:day as schedules %}
                                     {% if schedules %}
                                         {% for schedule in schedules %}
-                                            <p>{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:"H:i" }}</p>
+                                            <p>{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:'H:i' }}</p>
                                         {% endfor %}
+
+                                        <a class="btn btn-danger btn-sm mt-2" 
+                                            href="{% url 'booking:schedule_remove' id=trainer.user.id date=day|date:'Y-m-d' %} ">
+                                            Видалити
+                                        </a>
                                     {% else %}
-                                        <p>Немає розкладу</p>
+                                        <p>Не працює</p>
                                     {% endif %}
                                 {% endwith %}
                             </td>
