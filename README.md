@@ -2,11 +2,10 @@
 
 ### Frontend:
 HTML/CSS/JS
-HTMX
 
 ### Backend
-Python 3.11
+Python 3.11.7
 Django 4.2.11
-SQLite 3
+SQLite3
 Celery
 Redis

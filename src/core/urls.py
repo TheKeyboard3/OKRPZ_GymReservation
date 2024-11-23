@@ -1,16 +1,11 @@
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import include, path, re_path
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from django.urls import include, path
 
 from main.views import NotFoundView
 
 urlpatterns = [
-    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/v1/', include('api.urls', namespace='api')),
-    re_path(r'^adminactions/', include('adminactions.urls')),
     path(f'{settings.ADMIN_PATH}/login/', NotFoundView.as_view()),
     path(f'{settings.ADMIN_PATH}/', admin.site.urls),
     path('', include('main.urls', namespace='main')),

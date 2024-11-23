@@ -1,9 +1,8 @@
-from django.forms import Form, ModelForm, CharField, TextInput, EmailField, ImageField, ValidationError, DateField
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
+from django.forms import Form, ModelForm, CharField, EmailField, ImageField, ValidationError
+from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
 from django.contrib.auth.password_validation import validate_password
-
-from phonenumber_field.formfields import PhoneNumberField
 from django_recaptcha.fields import ReCaptchaField
+from phonenumber_field.formfields import PhoneNumberField
 from users.models import User, ClientProfile, TrainerProfile
 
 
