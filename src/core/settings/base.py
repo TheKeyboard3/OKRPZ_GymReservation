@@ -118,7 +118,7 @@ LANGUAGES = (
 LANGUAGE_COOKIE_NAME = 'site_language'
 LOCALE_PATHS = (BASE_DIR / 'src/locale',)
 TIME_ZONE = env.str('TIME_ZONE')
-USE_TZ = True
+USE_TZ = False
 USE_L10N = True
 USE_I18N = True
 

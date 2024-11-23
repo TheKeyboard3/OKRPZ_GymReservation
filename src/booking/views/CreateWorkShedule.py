@@ -3,7 +3,7 @@ from datetime import date, time
 from django.db import transaction
 from django.contrib import messages
 from django.utils import timezone
-from django.utils.timezone import datetime, timedelta, localtime
+from django.utils.timezone import datetime, timedelta
 from django.urls import reverse
 from django.views.generic import FormView
 from users.models import TrainerProfile
@@ -87,7 +87,7 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
 
         trainer = TrainerProfile.objects.get(user__id=self.kwargs['id'])
         work_schedules = WorkSchedule.objects.filter(trainer=trainer)
-        current_date = localtime(timezone.now())
+        current_date = timezone.now()
         schedule_days = [(current_date.date() + timedelta(days=i))
                          for i in range(14)]
 

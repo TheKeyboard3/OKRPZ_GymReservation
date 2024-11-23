@@ -1,5 +1,5 @@
 from datetime import date, time
-from django.utils.timezone import datetime, timedelta, localtime, now
+from django.utils.timezone import datetime, timedelta, now
 from django.forms import Form, Select, IntegerField, ChoiceField, TypedChoiceField, DateTimeInput, DateTimeField, DateField, TimeField, ValidationError, HiddenInput
 from core.settings.base import MIN_RESERVATION_TIME, MAX_RESERVATION_TIME
 from users.models import User, TrainerProfile

@@ -1,7 +1,7 @@
 import logging
 from django.contrib import messages
 from django.utils import timezone
-from django.utils.timezone import datetime, timedelta, localtime, now
+from django.utils.timezone import datetime, timedelta, now
 from django.urls import reverse
 from django.views.generic import FormView
 from core.settings.base import MIN_RESERVATION_TIME, MAX_RESERVATION_TIME
@@ -71,7 +71,7 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
                 current_slot += timedelta(hours=1)
 
         work_schedules = WorkSchedule.objects.filter(trainer=trainer)
-        current_date = localtime(timezone.now())
+        current_date = timezone.now()
         schedule_days = [(current_date.date() + timedelta(days=i))
                          for i in range(14)]
 
