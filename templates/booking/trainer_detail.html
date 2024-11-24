@@ -24,10 +24,8 @@
                     <div class="card-body">
                         <h5 class="card-title">
                             <text class="text-uppercase">
-                                {{ trainer.user.get_full_name|default:trainer.user.username }}
-                            </text> 
-                            <i class="bi bi-arrow-right-short"></i> 
-                            <text class="text-muted">{{ trainer.user.username }}</text>
+                                {{ trainer.user.get_full_name }}
+                            </text>
                         </h5>
 
                         <div class="bio">
@@ -42,7 +40,7 @@
                             </a>
                         {% endif %}
 
-                        {% if user.is_authenticated  %}
+                        {% if user.is_authenticated and user.client_profile  %}
                             <a href="{% url 'booking:reservation' trainer.user.id %}" 
                                 class="btn btn-dark mr-2">
                                 Забронювати час <i class="bi bi-calendar4-week"></i>
@@ -67,7 +65,7 @@
     </div>
 </div>
 
-{% with modal_image=trainer.avatar modal_title=trainer.user.username %}
+{% with modal_image=trainer.avatar modal_title=trainer.user.get_full_name %}
     {% include '_modal_image_preview.html' %}
 {% endwith %}
 
