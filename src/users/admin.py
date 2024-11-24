@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.contrib.auth.hashers import make_password
 from image_uploader_widget.widgets import ImageUploaderWidget
 from main.services import get_html_image
+from main.admin import MyAdmin
 from users.models import User, Client, Trainer, Admin, ClientProfile, TrainerProfile
 
 
@@ -33,7 +34,7 @@ class TrainerProfileInline(admin.StackedInline):
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(MyAdmin):
     list_display = ['first_name', 'last_name',
                     'email', 'is_active']
     list_display_links = ['first_name']
@@ -59,7 +60,7 @@ class UserAdmin(admin.ModelAdmin):
         return fields
 
 
-class BaseUserAdmin(admin.ModelAdmin):
+class BaseUserAdmin(MyAdmin):
     list_display = ['first_name', 'last_name', 'email', 'is_active']
     list_filter = ['is_active']
     search_fields = ['first_name', 'last_name', 'email']
