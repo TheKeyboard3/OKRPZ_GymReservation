@@ -1,10 +1,9 @@
 import logging
-from django.contrib import messages
-from django.utils import timezone
-from django.utils.timezone import datetime, timedelta, now
+from django.http import Http404
 from django.urls import reverse
+from django.contrib import messages
+from django.utils.timezone import datetime, timedelta
 from django.views.generic import FormView
-from core.settings.base import MIN_RESERVATION_TIME, MAX_RESERVATION_TIME
 from users.models import TrainerProfile, ClientProfile, User
 from booking.models import Departament, Reservation, WorkSchedule
 from booking.mixins import NotTrainerRequiredMixin
@@ -21,13 +20,15 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
 
         yesterday = datetime.today()
-
-        # Поточна дата або вибрана дата
         selected_date = self.request.GET.get('date',
                                              yesterday.strftime('%Y-%m-%d'))
-        selected_date = datetime.strptime(selected_date, '%Y-%m-%d')
+        try:
+            selected_date = datetime.strptime(selected_date, '%Y-%m-%d')
+        except ValueError:
+            raise Http404('Некоректний формат дати')
 
-        trainer = TrainerProfile.objects.select_related('user').get(user__id=self.kwargs['id'])
+        trainer = TrainerProfile.objects.select_related(
+            'user').get(user__id=self.kwargs['id'])
 
         # Генеруємо список днів для розкладу
         schedule_days = [(yesterday.date() + timedelta(days=i))
@@ -41,9 +42,10 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
 
         # Розподіляємо графіки за днями
         schedule_by_day = {day: [] for day in schedule_days}
-    
+
         for schedule in all_work_schedules:
             schedule_date = schedule.start_time.date()
+
             if schedule_date in schedule_by_day:
                 schedule_by_day[schedule_date].append(schedule)
 
@@ -71,8 +73,10 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
 
         # Генеруємо доступні слоти
         available_slots = []
+
         for schedule in daily_work_schedules:
             current_slot = schedule.start_time
+
             while current_slot + timedelta(hours=1) <= schedule.end_time:
                 slot_start = current_slot.time()
                 slot_end = (current_slot + timedelta(hours=1)).time()
@@ -100,7 +104,8 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
 
     def form_valid(self, form):
         try:
-            trainer = TrainerProfile.objects.select_related('user').get(user__id=self.kwargs['id'])
+            trainer = TrainerProfile.objects.select_related(
+                'user').get(user__id=self.kwargs['id'])
             client = self.request.user.profile
             slot_time = form.cleaned_data['time_slot']
             start_time, end_time = map(str.strip, slot_time.split('-'))
@@ -123,6 +128,7 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
 
             messages.success(self.request, 'Резервацію створено успішно!')
             return super().form_valid(form)
+
         except TrainerProfile.DoesNotExist:
             messages.error(self.request, 'Такого тренера не існує!')
             return self.form_invalid(form)
