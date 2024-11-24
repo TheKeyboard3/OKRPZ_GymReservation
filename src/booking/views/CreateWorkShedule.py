@@ -85,18 +85,22 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        trainer = TrainerProfile.objects.get(user__id=self.kwargs['id'])
-        work_schedules = WorkSchedule.objects.filter(trainer=trainer)
+        trainer = TrainerProfile.objects.select_related('user').get(user__id=self.kwargs['id'])
         current_date = timezone.now()
-        schedule_days = [(current_date.date() + timedelta(days=i))
-                         for i in range(14)]
+        schedule_days = [(current_date.date() + timedelta(days=i)) for i in range(3 * 7)]
 
-        schedule_by_day = {
-            day: work_schedules.filter(
-                start_time__date=day
-            ).order_by('start_time')
-            for day in schedule_days
-        }
+        work_schedules = WorkSchedule.objects.filter(
+            trainer=trainer,
+            start_time__date__range=(schedule_days[0], schedule_days[-1])
+        ).order_by('start_time')
+
+        # Групуємо графіки за днями
+        schedule_by_day = {day: [] for day in schedule_days}
+        
+        for schedule in work_schedules:
+            schedule_date = schedule.start_time.date()
+            if schedule_date in schedule_by_day:
+                schedule_by_day[schedule_date].append(schedule)
 
         context['trainer'] = trainer
         context['current_day'] = current_date.weekday()

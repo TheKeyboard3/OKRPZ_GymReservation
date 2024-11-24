@@ -1,17 +1,18 @@
 from django.contrib import admin
+from main.admin import MyAdmin
 from users.models import ClientProfile, TrainerProfile
 from booking.models import Departament, Reservation, WorkSchedule, WeekdayEnum
 
 
 @admin.register(Departament)
-class DepartamentAdmin(admin.ModelAdmin):
+class DepartamentAdmin(MyAdmin):
     list_display = ['title']
     readonly_fields = ['id']
     fields = ['title']
 
 
 @admin.register(Reservation)
-class ReservationAdmin(admin.ModelAdmin):
+class ReservationAdmin(MyAdmin):
     list_display = ['id', 'client', 'trainer', 'start_date', 'end_date',
                     'display_weekday', 'created',]
     list_display_links = ['client']
@@ -48,7 +49,7 @@ class ReservationAdmin(admin.ModelAdmin):
 
 
 @admin.register(WorkSchedule)
-class WorkScheduleAdmin(admin.ModelAdmin):
+class WorkScheduleAdmin(MyAdmin):
     list_display = ['trainer_name', 'start_time',
                     'end_time', 'display_weekday']
     list_filter = ['trainer']

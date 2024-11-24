@@ -42,12 +42,20 @@
                             Акаунт </a>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDarkDropdownMenuLink">
-                            <li>
-                                <a class="dropdown-item" 
-                                    href="{% url 'user:detail' user.id %}">
-                                    Профіль ({{ user.first_name }} {{ user.last_name }})</a>
-                            </li>
-                            <hr class="dropdown-divider">
+
+                            {% if not user.is_staff %}
+                                <li>
+                                    {% if user.trainer_profile %}
+                                        <a class="dropdown-item" href="{% url 'booking:detail' user.id %}">
+                                            Профіль ({{ user.get_full_name }})</a>
+                                    {% else %}
+                                        <a class="dropdown-item" href="{% url 'user:detail' user.id %}">
+                                            Профіль ({{ user.get_full_name }})</a>
+                                    {% endif %}
+                                </li>
+                                <hr class="dropdown-divider">
+                            {% endif %}
+
                             <li><a href="{% url 'user:logout' %}?next={{ request.path }}"
                                 class="dropdown-item" >
                                 Вийти</a></li>

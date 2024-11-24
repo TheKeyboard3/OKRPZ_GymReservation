@@ -26,7 +26,7 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
                                              yesterday.strftime('%Y-%m-%d'))
         selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
 
-        trainer = TrainerProfile.objects.get(user__id=self.kwargs['id'])
+        trainer = TrainerProfile.objects.select_related('user').get(user__id=self.kwargs['id'])
 
         # Генеруємо список днів для розкладу
         current_date = timezone.now()
@@ -41,6 +41,7 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
 
         # Розподіляємо графіки за днями
         schedule_by_day = {day: [] for day in schedule_days}
+    
         for schedule in all_work_schedules:
             schedule_date = schedule.start_time.date()
             if schedule_date in schedule_by_day:
