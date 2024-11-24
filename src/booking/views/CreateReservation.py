@@ -20,17 +20,17 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Поточна дата або вибрана дата
         yesterday = datetime.today()
+
+        # Поточна дата або вибрана дата
         selected_date = self.request.GET.get('date',
                                              yesterday.strftime('%Y-%m-%d'))
-        selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+        selected_date = datetime.strptime(selected_date, '%Y-%m-%d')
 
         trainer = TrainerProfile.objects.select_related('user').get(user__id=self.kwargs['id'])
 
         # Генеруємо список днів для розкладу
-        current_date = timezone.now()
-        schedule_days = [(current_date.date() + timedelta(days=i))
+        schedule_days = [(yesterday.date() + timedelta(days=i))
                          for i in range(3*7)]
 
         # Отримуємо всі графіки тренера для обраного періоду одним запитом
@@ -48,7 +48,7 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
                 schedule_by_day[schedule_date].append(schedule)
 
         # Отримуємо графік роботи тренера на обраний день
-        daily_work_schedules = schedule_by_day.get(selected_date, [])
+        daily_work_schedules = schedule_by_day.get(selected_date.date(), [])
 
         if not daily_work_schedules:
             context['available_slots'] = []
@@ -100,8 +100,7 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
 
     def form_valid(self, form):
         try:
-            trainer = TrainerProfile.objects.get(
-                pk=form.cleaned_data['trainer_id'])
+            trainer = TrainerProfile.objects.select_related('user').get(user__id=self.kwargs['id'])
             client = self.request.user.profile
             slot_time = form.cleaned_data['time_slot']
             start_time, end_time = map(str.strip, slot_time.split('-'))

@@ -14,10 +14,15 @@
 
             <div class="col-md-6 bg-white p-4 rounded">
                 
-                <h3>{{ trainer.user.get_full_name }}: забронювати час </h3>
-                <h3>{{ selected_date }}</h3>
+                <h3>{{ trainer.user.get_full_name }} забронювати час на {{ selected_date|month }}</h3>
                 <form method="POST">
                     {% csrf_token %}
+                    
+                    <input type="hidden" 
+                        id="id_trainer_id" 
+                        name="trainer_id" 
+                        value="{{ trainer.user.id }}" 
+                        readonly>
                     
                     <!-- Вибір дати -->
                     <div class="form-group">
@@ -46,14 +51,16 @@
                         </p>
                     {% endif %}
             
-                    <!-- Приховане поле для ID тренера -->
-                    <input type="hidden" name="trainer_id" value="{{ trainer.id }}">
-            
                     <!-- Кнопка відправлення -->
                     <div class="form-group mt-3">
                         <button type="submit" class="btn btn-primary" {% if not available_slots %}disabled{% endif %}>
                             Забронювати
                         </button>
+
+                        <a class="btn btn-primary"
+                            href="{% url 'booking:detail' id=trainer.user.id %}">
+                            Назад
+                        </a>
                     </div>
                 </form>
             </div>
@@ -64,7 +71,9 @@
                     <thead>
                         <tr>
                             {% for day in schedule_days %}
-                                <th>{{ day|date:"D" }}<br>{{ day|date:"d.m" }}</th>
+                                <th title="{{ day|date:'l' }} {{ day|month }}">
+                                    {{ day|date:'D' }}<br>{{ day|date:'d.m' }}
+                                </th>
                             {% endfor %}
                         </tr>
                     </thead>
@@ -75,13 +84,22 @@
                                     {% with schedule_by_day|get_item:day as schedules %}
                                         {% if schedules %}
                                             {% for schedule in schedules %}
-                                                <p>{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:"H:i" }}</p>
+                                                <p title="{{ day|date:'l' }} з {{ schedule.start_time|time:'H:i' }} до {{ schedule.end_time|time:'H:i' }}">
+                                                    {{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:'H:i' }}
+                                                </p>
                                             {% endfor %}
 
-                                            <a class="btn btn-primary btn-sm mt-2" 
-                                                href="{% url 'booking:reservation' id=trainer.user.id %}?date={{ day|date:'Y-m-d' }}">
-                                                Обрати день
-                                            </a>
+                                            {% if day|date:'Y-m-d' != selected_date %}
+                                                <a class="btn btn-primary btn-sm" 
+                                                    href="{% url 'booking:reservation' id=trainer.user.id %}?date={{ day|date:'Y-m-d' }}">
+                                                    Обрати
+                                                </a>
+                                            {% else %}
+                                                <a class="btn btn-warning btn-sm" 
+                                                    href="{% url 'booking:reservation' id=trainer.user.id %}?date={{ day|date:'Y-m-d' }}">
+                                                    Обрано
+                                                </a>
+                                            {% endif %}
                                         {% else %}
                                             <p>Не працює</p>
                                         {% endif %}
