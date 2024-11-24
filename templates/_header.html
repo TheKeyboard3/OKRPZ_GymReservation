@@ -45,9 +45,13 @@
 
                             {% if not user.is_staff %}
                                 <li>
-                                    <a class="dropdown-item" 
-                                        href="{% url 'user:detail' user.id %}">
-                                        Профіль ({{ user.get_full_name }})</a>
+                                    {% if user.trainer_profile %}
+                                        <a class="dropdown-item" href="{% url 'booking:detail' user.id %}">
+                                            Профіль ({{ user.get_full_name }})</a>
+                                    {% else %}
+                                        <a class="dropdown-item" href="{% url 'user:detail' user.id %}">
+                                            Профіль ({{ user.get_full_name }})</a>
+                                    {% endif %}
                                 </li>
                                 <hr class="dropdown-divider">
                             {% endif %}
