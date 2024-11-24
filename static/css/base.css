@@ -8,7 +8,7 @@ body {
         linear-gradient(to bottom,
             rgba(165, 153, 153, 0.6),
             rgba(0, 0, 0, 0.6)),
-        url('../images/background.png');
+        url('../images/background.jpg');
     background-color: rgb(185, 185, 185);
     background-repeat: no-repeat;
     background-attachment: fixed;
