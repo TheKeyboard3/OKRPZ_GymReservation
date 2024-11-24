@@ -7,13 +7,13 @@ from users.models import User, ClientProfile, TrainerProfile
 
 
 class UserLoginForm(AuthenticationForm):
-    username = CharField()
-    password = CharField()
+    username = CharField(required=True)
+    password = CharField(required=True)
 
 
 class UserEditForm(UserChangeForm):
-    first_name = CharField()
-    last_name = CharField(required=False)
+    first_name = CharField(required=True)
+    last_name = CharField(required=True)
     email = EmailField(disabled=True)
 
     class Meta:
@@ -41,11 +41,6 @@ class TrainerProfileEditForm(ModelForm):
     class Meta:
         model = TrainerProfile
         fields = ('avatar', 'phone_number', 'bio')
-
-
-class ResetTokenForm(Form):
-    token = CharField()
-    captcha = ReCaptchaField()
 
 
 class ResetPasswordForm(Form):
