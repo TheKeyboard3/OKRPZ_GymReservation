@@ -90,7 +90,15 @@
                     {% endif %}
                 </div>
 
-                <button class="w-100 btn btn-lg btn-primary mt-3" type="submit">Додати розклад</button>
+                <div class="form-group mt-3">
+                    <button class="btn btn-primary" type="submit">
+                        Додати розклад
+                    </button>
+                    <a class="btn btn-primary"
+                        href="{% url 'booking:detail' id=trainer.user.id %}">
+                        Назад
+                    </a>
+                </div>
             </form>
         </div>
 
