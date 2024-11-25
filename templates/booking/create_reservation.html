@@ -33,17 +33,42 @@
                             name="date" 
                             value="{{ selected_date }}"
                             readonly>
+                        
+                        {% if form.date.errors %}
+                            <div class="alert alert-danger">{{ form.date.errors }}</div>
+                        {% endif %}
                     </div>
-            
+
+                    <div class="form-group">
+                        <label for="id_departament">Виберіть відділення:</label>
+                        <select class="form-control" 
+                            id="id_departament" 
+                            name="departament">
+                            {% for departament in trainer.departaments.all %}
+                                <option value="{{ departament.id }}">{{ departament.title }}</option>
+                            {% endfor %}
+                        </select>
+                
+                        {% if form.departament.errors %}
+                            <div class="alert alert-danger">{{ form.departament.errors }}</div>
+                        {% endif %}
+                    </div>
+
                     <!-- Вибір проміжків часу -->
                     {% if available_slots %}
                         <div class="form-group">
                             <label for="time_slot">Доступні проміжки часу:</label>
-                            <select id="time_slot" name="time_slot" class="form-control">
+                            <select class="form-control" 
+                                id="id_time_slot" 
+                                name="time_slot">
                                 {% for slot in available_slots %}
                                     <option value="{{ slot }}">{{ slot }}</option>
                                 {% endfor %}
                             </select>
+
+                            {% if form.time_slot.errors %}
+                                <div class="alert alert-danger">{{ form.time_slot.errors }}</div>
+                            {% endif %}
                         </div>
                     {% else %}
                         <p class="text-danger">

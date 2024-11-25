@@ -1,19 +1,27 @@
 from datetime import date, time
-from django.utils.timezone import datetime, timedelta, now
-from django.forms import Form, Select, IntegerField, ChoiceField, TypedChoiceField, DateTimeInput, DateTimeField, DateField, TimeField, ValidationError, HiddenInput
-from users.models import User, TrainerProfile
-from booking.models import Reservation, Departament, WeekdayEnum
+from django.forms import Form, Select, IntegerField, ChoiceField, ModelChoiceField, TypedChoiceField, DateField, TimeField, ValidationError
+from users.models import TrainerProfile
+from booking.models import Departament, WeekdayEnum
 
 
 class CreateReservationForm(Form):
-    trainer_id = IntegerField(widget=HiddenInput())
-    date = DateField()
-    time_slot = ChoiceField()
+    trainer_id = IntegerField(required=True)
+    date = DateField(required=True)
+    time_slot = ChoiceField(required=True)
+    departament = ModelChoiceField(
+        queryset=Departament.objects.none(),
+        required=True
+    )
 
     def __init__(self, *args, **kwargs):
         available_slots = kwargs.pop('available_slots', [])
+        available_departaments = kwargs.pop('available_departaments',
+                                            Departament.objects.none())
         super().__init__(*args, **kwargs)
-        self.fields['time_slot'].choices = [(slot, slot) for slot in available_slots]
+
+        self.fields['time_slot'].choices = [
+            (slot, slot) for slot in available_slots]
+        self.fields['departament'].queryset = available_departaments
 
 
 class CreateWorkSheduleForm(Form):
