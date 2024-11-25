@@ -1,7 +1,6 @@
 from datetime import date, time
 from django.utils.timezone import datetime, timedelta, now
 from django.forms import Form, Select, IntegerField, ChoiceField, TypedChoiceField, DateTimeInput, DateTimeField, DateField, TimeField, ValidationError, HiddenInput
-from core.settings.base import MIN_RESERVATION_TIME, MAX_RESERVATION_TIME
 from users.models import User, TrainerProfile
 from booking.models import Reservation, Departament, WeekdayEnum
 
@@ -19,16 +18,16 @@ class CreateReservationForm(Form):
 
 class CreateWorkSheduleForm(Form):
     trainer_id = IntegerField(required=True)
-    start_date = DateField(required=True, help_text='Дата початку періоду')
-    end_date = DateField(required=True, help_text='Дата завершення періоду')
+    start_date = DateField(required=True)
+    end_date = DateField(required=True)
     weekday = TypedChoiceField(
         coerce=int,
         choices=WeekdayEnum.choices(),
         widget=Select(attrs={'class': 'form-control'}),
         required=True
     )
-    start_time = TimeField(required=True, help_text='Час початку роботи')
-    end_time = TimeField(required=True, help_text='Час завершення роботи')
+    start_time = TimeField(required=True)
+    end_time = TimeField(required=True)
 
     def clean(self):
         cleaned_data = super().clean()

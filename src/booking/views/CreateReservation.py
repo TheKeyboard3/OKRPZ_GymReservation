@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.utils.timezone import datetime, timedelta
 from django.views.generic import FormView
+from core.settings.base import WEEKS
 from users.models import TrainerProfile, ClientProfile, User
 from booking.models import Departament, Reservation, WorkSchedule
 from booking.mixins import NotTrainerRequiredMixin
@@ -32,7 +33,7 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
 
         # Генеруємо список днів для розкладу
         schedule_days = [(yesterday.date() + timedelta(days=i))
-                         for i in range(3*7)]
+                         for i in range(WEEKS*7)]
 
         # Отримуємо всі графіки тренера для обраного періоду одним запитом
         all_work_schedules = WorkSchedule.objects.filter(
@@ -134,6 +135,7 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
             return self.form_invalid(form)
 
     def form_invalid(self, form: CreateReservationForm):
+        messages.error(self.request, 'Щось пішло не так!')
         return self.render_to_response(self.get_context_data(form=form))
 
     def get_success_url(self):
