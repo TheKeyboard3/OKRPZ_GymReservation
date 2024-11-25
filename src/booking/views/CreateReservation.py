@@ -105,9 +105,14 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
 
         selected_date = self.get_selected_date()
         trainer = self.get_trainer()
+        user_reservations = Reservation.objects.filter(
+            client=self.request.user.profile, trainer=trainer)
+        context['user_reservations'] = user_reservations
+        
         schedule_days, schedule_by_day = self.get_schedule_data(trainer)
 
         daily_work_schedules = schedule_by_day.get(selected_date.date(), [])
+        
         if not daily_work_schedules:
             context.update({
                 'available_slots': [],
