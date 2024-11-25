@@ -32,7 +32,7 @@
                             {{ trainer.bio|linebreaks }}
                         </div>
 
-                        {% if user.id == trainer.user.id %}
+                        {% if user.is_authenticated and user.id == trainer.user.id %}
                             <a href="{% url 'user:trainer_profile_change' %}" 
                                 class="btn btn-dark mr-3 float-right"
                                 title="Редагувати профіль тренера">
@@ -63,6 +63,24 @@
             </div>
         </div>
     </div>
+    
+    {% if user == trainer.user or user.is_staff %}
+        <div class="col-md-10 bg-white p-4 mt-3 rounded">
+            <h4>Резервації у тренера</h4>
+
+            {% for reservation in trainer.trainer_reservations.all %}
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                    <div>
+                        {{ reservation.client.user.get_full_name }}
+                        <strong>{{ reservation.start_date|naturalday }}</strong>
+                        {{ reservation.start_date|date:'H:i' }} - {{ reservation.end_date|date:'H:i' }}
+                    </div>
+                </div>
+            {% empty %}
+                <div>Резервацій не має</div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
 
 {% with modal_image=trainer.avatar modal_title=trainer.user.get_full_name %}

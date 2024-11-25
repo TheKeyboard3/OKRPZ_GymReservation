@@ -138,17 +138,18 @@
             
             {% if user_reservations %}
                 <div class="col-md-10 bg-white p-4 mt-3 rounded">
-                    <h4>Ваш зарезервований час</h4>
+                    <h4>Ваш зарезервований час у цього тренера</h4>
 
                     {% for reservation in user_reservations %}
                         <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
                             <div>
                                 <strong>{{ reservation.start_date|naturalday }}</strong>
                                 {{ reservation.start_date|date:'H:i' }} - {{ reservation.end_date|date:'H:i' }}
-                                <i class="text-muted">{{ reservation.duration_in_minutes }} Хв.</i>
                             </div>
                             
-                            <form method="POST" action="{% url 'booking:reservation_delete' reservation.pk %}" class="mb-0">
+                            <form class="mb-0"
+                                method="POST" 
+                                action="{% url 'booking:reservation_delete' reservation.id %}" >
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-danger btn-sm">
                                     <i class="bi bi-trash"></i> Скасувати
