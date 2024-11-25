@@ -1,13 +1,29 @@
 import os
+from datetime import datetime, date
 from django import template
-from django.utils.http import urlencode
 from django.utils import translation
+from django.utils.http import urlencode
 from bs4 import BeautifulSoup
 import humanize
 import bleach
 
-
 register = template.Library()
+months_ukr = [
+    'січня', 'лютого', 'березня', 'квітня', 'травня', 'червня',
+    'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня'
+]
+
+
+@register.filter
+def month(value):
+    if isinstance(value, str):
+        try:
+            value = datetime.strptime(value, '%Y-%m-%d').date()
+        except ValueError:
+            return value
+
+    if isinstance(value, (datetime, date)):
+        return f'{value.day} {months_ukr[value.month - 1]}'
 
 
 @register.simple_tag(takes_context=True)

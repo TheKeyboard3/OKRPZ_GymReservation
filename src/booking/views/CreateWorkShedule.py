@@ -1,11 +1,10 @@
 import logging
 from datetime import date, time
-from django.db import transaction
 from django.contrib import messages
-from django.utils import timezone
 from django.utils.timezone import datetime, timedelta
 from django.urls import reverse
 from django.views.generic import FormView
+from core.settings.base import WEEKS
 from users.models import TrainerProfile
 from booking.models import Reservation, WorkSchedule
 from booking.forms import CreateWorkSheduleForm
@@ -20,8 +19,8 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
 
     def form_valid(self, form: CreateWorkSheduleForm):
         try:
-            trainer = TrainerProfile.objects.get(
-                user__id=form.cleaned_data['trainer_id'])
+            trainer = TrainerProfile.objects.select_related(
+                'user').get(user__id=form.cleaned_data['trainer_id'])
             start_date: date = form.cleaned_data['start_date']
             end_date: date = form.cleaned_data['end_date']
             weekday: int = form.cleaned_data['weekday']
@@ -85,9 +84,11 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        trainer = TrainerProfile.objects.select_related('user').get(user__id=self.kwargs['id'])
-        current_date = timezone.now()
-        schedule_days = [(current_date.date() + timedelta(days=i)) for i in range(3 * 7)]
+        trainer = TrainerProfile.objects.select_related(
+            'user').get(user__id=self.kwargs['id'])
+        today = datetime.today()
+        schedule_days = [(today.date() + timedelta(days=i))
+                         for i in range(WEEKS*7)]
 
         work_schedules = WorkSchedule.objects.filter(
             trainer=trainer,
@@ -96,18 +97,20 @@ class CreateWorkShedule(AdminOnlyMixin, FormView):
 
         # Групуємо графіки за днями
         schedule_by_day = {day: [] for day in schedule_days}
-        
+
         for schedule in work_schedules:
             schedule_date = schedule.start_time.date()
             if schedule_date in schedule_by_day:
                 schedule_by_day[schedule_date].append(schedule)
 
         context['trainer'] = trainer
-        context['current_day'] = current_date.weekday()
+        context['today'] = today.strftime('%Y-%m-%d')
+        context['default_end_date'] = (
+            today + timedelta(days=(WEEKS+1)*7)).strftime('%Y-%m-%d')
         context['work_schedule'] = work_schedules
         context['schedule_days'] = schedule_days
         context['schedule_by_day'] = schedule_by_day
         return context
 
-    def get_success_url(self) -> str:
+    def get_success_url(self):
         return reverse('booking:shedule_add', kwargs={'id': self.kwargs['id']})

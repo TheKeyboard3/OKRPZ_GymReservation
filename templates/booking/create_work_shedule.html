@@ -22,14 +22,18 @@
                 <h3>{{ trainer.user.get_full_name }}</h3>
                 <h5>Виберіть проміжок дат</h3>
 
-                <input type="hidden" name="trainer_id" value="{{ trainer.user.id }}" required>
+                <input type="hidden" 
+                    id="id_trainer_id" 
+                    name="trainer_id" 
+                    value="{{ trainer.user.id }}" 
+                    required>
 
                 <div class="form-group mt-3">
                     <label for="id_start_date" class="form-label">Початкова дата</label>
                     <input type="date" class="form-control" 
                         id="id_start_date" 
                         name="start_date" 
-                        value="{{ form.start_date.value|date:'Y-m-d' }}" 
+                        value="{{ form.start_date.value|default:today }}"
                         required>
                     {% if form.start_date.errors %}
                         <div class="alert alert-danger">{{ form.start_date.errors }}</div>
@@ -41,7 +45,7 @@
                     <input type="date" class="form-control" 
                         id="id_end_date" 
                         name="end_date" 
-                        value="{{ form.end_date.value|date:'Y-m-d' }}" 
+                        value="{{ form.end_date.value|default:default_end_date }}"
                         required>
                     {% if form.end_date.errors %}
                         <div class="alert alert-danger">{{ form.end_date.errors }}</div>
@@ -67,7 +71,7 @@
                     <input type="time" class="form-control" 
                         id="id_start_time" 
                         name="start_time" 
-                        value="08:00" 
+                        value="{{ form.start_time.value|default:'08:00' }}" 
                         required>
                     {% if form.start_time.errors %}
                         <div class="alert alert-danger">{{ form.start_time.errors }}</div>
@@ -79,7 +83,7 @@
                     <input type="time" class="form-control" 
                         id="id_end_time" 
                         name="end_time" 
-                        value="16:00" 
+                        value="{{ form.end_time.value|default:'16:00' }}" 
                         required>
                     {% if form.end_time.errors %}
                         <div class="alert alert-danger">{{ form.end_time.errors }}</div>
@@ -110,7 +114,7 @@
                                             <p>{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:'H:i' }}</p>
                                         {% endfor %}
 
-                                        <a class="btn btn-danger btn-sm mt-2" 
+                                        <a class="btn btn-danger btn-sm" 
                                             href="{% url 'booking:schedule_remove' id=trainer.user.id date=day|date:'Y-m-d' %} ">
                                             Видалити
                                         </a>
