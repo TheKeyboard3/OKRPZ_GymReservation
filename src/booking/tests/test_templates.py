@@ -13,7 +13,7 @@ class BookingTemplateTest(TestCase):
             password='123456',
             is_active=True,
             is_staff=True)
-        
+
         self.tr1 = User.objects.create_user(
             username='2',
             first_name='Максим',
@@ -93,3 +93,24 @@ class BookingTemplateTest(TestCase):
         response = self.client.get(f'/trainers/{self.tr1.pk}/schedule/add/')
 
         self.assertEqual(response.status_code, 403)
+
+    def test_create_reservation_if_admin(self):
+        login = self.client.login(email='admin1@gmail.com', password='123456')
+        self.assertTrue(login)
+        response = self.client.get(f'/trainers/{self.tr1.pk}/reservation')
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_reservation_if_trainer(self):
+        login = self.client.login(email='bodnar@gmail.com', password='123456')
+        self.assertTrue(login)
+        response = self.client.get(f'/trainers/{self.tr1.pk}/reservation')
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_create_reservation_if_client(self):
+        login = self.client.login(email='vuico@gmail.com', password='123456')
+        self.assertTrue(login)
+        response = self.client.get(f'/trainers/{self.tr1.pk}/reservation')
+
+        self.assertEqual(response.status_code, 200)
