@@ -1,0 +1,98 @@
+/* Загальні стилі */
+.container {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+/* Вікно форми */
+.bg-white {
+    background-color: #2b2b2b; /* Темно-сірий фон */
+    color: #f5f5f5; /* Світлий текст */
+    border-radius: 15px;
+    padding:0;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Тінь */
+    margin-bottom: 20px;
+}
+
+/* Заголовки */
+h3, h4, h5 {
+    color: #ffc107; /* Жовтий колір для заголовків */
+    font-weight: bold;
+}
+
+/* Поля вводу */
+.form-control {
+    background-color: #3a3a3a;
+    color: #f5f5f5;
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+}
+
+.form-control:focus {
+    border-color: #ffc107;
+    background-color: #444;
+}
+
+.select, .btn {
+    background-color: #3a3a3a;
+    color: #f5f5f5;
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+}
+
+.select:focus, .btn:focus {
+    border-color: #ffc107;
+}
+
+.btn {
+    background-color: #2b2b2b;
+    color: #ffc107;
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn:hover {
+    background-color: #ffc107;
+    color: #2b2b2b;
+    transform: scale(1.05); /* Легка анімація збільшення */
+}
+
+/* Кнопка забронювати */
+.btn-primary {
+    background-color: #ffc107;
+    color: #2b2b2b;
+}
+
+.btn-primary:hover {
+    background-color: #e0a800;
+    color: #2b2b2b;
+}
+
+/* Кнопка скасувати */
+.btn-danger {
+    background-color: #d9534f;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #c9302c;
+    color: #fff;
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .col-md-6 {
+        width: 100%;
+    }
+
+    .btn {
+        font-size: 1rem;
+    }
+}

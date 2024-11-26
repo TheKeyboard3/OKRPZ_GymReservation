@@ -1,0 +1,11 @@
+.card-review-rating {
+    margin-top: 85px;
+}
+
+.card-review-rating a {
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    padding: 6px 13px;
+    font-size: 45px;
+}
