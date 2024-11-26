@@ -1,4 +1,5 @@
 from django.test import TestCase
+from booking.models import Departament, Reservation
 from users.models import User, ClientProfile, TrainerProfile
 
 
@@ -22,9 +23,8 @@ class BookingTemplateTest(TestCase):
             password='123456',
             is_active=True)
 
-        TrainerProfile.objects.create(
+        self.tp1 = TrainerProfile.objects.create(
             user=self.tr1,
-            avatar=None,
             bio='Опис тренера та його види зайнятості',
             phone_number='+380680382525')
 
@@ -36,9 +36,8 @@ class BookingTemplateTest(TestCase):
             password='123456',
             is_active=True)
 
-        TrainerProfile.objects.create(
+        self.tp2 = TrainerProfile.objects.create(
             user=self.tr2,
-            avatar=None,
             bio='Опис',
             phone_number='+380680382525')
 
@@ -50,9 +49,30 @@ class BookingTemplateTest(TestCase):
             password='123456',
             is_active=True)
 
-        ClientProfile.objects.create(
-            user=self.client1,
-            avatar=None)
+        self.cp1 = ClientProfile.objects.create(
+            user=self.client1)
+
+        self.client2 = User.objects.create_user(
+            username='5',
+            first_name='Клієнт',
+            last_name='№2',
+            email='client2@gmail.com',
+            password='123456',
+            is_active=True)
+
+        self.cp2 = ClientProfile.objects.create(
+            user=self.client2)
+
+        self.dep1 = Departament.objects.create(
+            title='Басейн')
+
+        self.reservation1 = Reservation.objects.create(
+            trainer=self.tp1,
+            client=self.cp1,
+            departament=self.dep1,
+            start_date='2024-11-30 10:00',
+            end_date='2024-11-30 11:00',
+        )
 
     def test_booking_detail_without_login(self):
         response = self.client.get(f'/trainers/{self.tr1.pk}/')
@@ -114,3 +134,13 @@ class BookingTemplateTest(TestCase):
         response = self.client.get(f'/trainers/{self.tr1.pk}/reservation')
 
         self.assertEqual(response.status_code, 200)
+
+    def test_reservation_delete_if_different_client(self):
+        login = self.client.login(email='client2@gmail.com', password='123456')
+        self.assertTrue(login)
+        response = self.client.post(
+            f'reservation/{self.reservation1.pk}/delete')
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(
+            Reservation.objects.filter(pk=self.reservation1.pk).exists())
