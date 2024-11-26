@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static humanize main_tags %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg rounded bg-dark text-light" style="max-width: 800px; width: 100%;">
+        <div class="row g-0">
+            <!-- Аватар -->
+            <div class="col-md-5 d-flex justify-content-center align-items-center p-4">
+                {% if user.client_profile.avatar %}
+                <img src="{{ user.client_profile.avatar.url }}"
+                    class="img-fluid rounded-circle border border-warning"
+                    alt="Фото ({{ user.get_full_name }})"
+                    style="width: 200px; height: 200px; object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'images/baseavatar.jpg' %}"
+                        class="img-fluid rounded-circle border border-warning"
+                        alt="Фото ({{ detail_user.get_full_name }})"
+                        style="width: 200px; height: 200px; object-fit: cover;">
+                {% endif %}
+            </div>
+            
+            <!-- Інформація -->
+            <div class="col-md-7">
+                <div class="card-body">
+                    <h3 class="card-title text-center text-uppercase text-warning">
+                        {{ detail_user.get_full_name }}
+                    </h3>
+                    <p class="text-center text-secondary fs-5">Дата реєстрації: {{ detail_user.date_joined|naturalday }}</p>
+                    
+                    <div class="d-flex justify-content-center mt-5 gap-3">
+                        {% if user.is_superuser %}
+                            <a href="/{{ admin_path }}/users/client/{{ detail_user.id }}/change/" 
+                                class="btn btn-warning px-4"
+                                title="Панель адміністратора">
+                                Адмін <i class="bi bi-kanban-fill"></i>
+                            </a>
+                        {% endif %}
+
+                        {% if user.id == detail_user.id %}
+                            <a href="{% url 'user:client_profile_change' %}" 
+                                class="btn btn-warning px-4"
+                                title="Редагувати профіль користувача">
+                                Редагувати <i class="bi bi-pencil-square"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+
+{% with modal_image=detail_user.profile.avatar modal_title=detail_user.username %}
+    {% include '_modal_image_preview.html' %}
+{% endwith %}
+
+{% endblock %}

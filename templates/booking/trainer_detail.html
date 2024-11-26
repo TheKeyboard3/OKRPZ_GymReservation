@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static humanize main_tags %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card mt-5 mb-5 bg-dark rounded border border-warning shadow-sm">
+            <div class="row">
+                <!-- Аватар -->
+                <div class="col-md-4 d-flex justify-content-center align-items-center p-3"> 
+                    {% if user.trainer_profile.avatar %}
+                    <img src="{{ user.trainer_profile.avatar.url }}" 
+                        class="img-fluid rounded-circle border border-warning"
+                         title="{{ user.trainer_profile.avatar.name|basename }}" 
+                         style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'images/baseavatar.jpg' %}" 
+                         class="img-fluid rounded-circle border border-warning" 
+                         alt="Фото" 
+                         style="width: 150px; height: 150px; object-fit: cover;">
+                {% endif %}
+                 
+                </div>
+
+                <!-- Інформація про тренера -->
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title text-warning text-uppercase">
+                            {{ trainer.user.get_full_name }}
+                        </h5>
+
+                        <div class="bio text-secondary mb-3">
+                            {{ trainer.bio|linebreaks }}
+                        </div>
+
+                        <!-- Кнопки -->
+                        <div class="d-flex flex-wrap gap-2">
+                            {% if user.is_authenticated and user.id == trainer.user.id %}
+                                <a href="{% url 'user:trainer_profile_change' %}" 
+                                   class="btn btn-warning btn-sm"
+                                   title="Редагувати профіль тренера">
+                                    Редагувати <i class="bi bi-pencil-square"></i>
+                                </a>
+                            {% endif %}
+
+                            {% if user.is_authenticated and user.client_profile %}
+                                <a href="{% url 'booking:reservation' trainer.user.id %}" 
+                                   class="btn btn-dark btn-sm">
+                                    Забронювати час <i class="bi bi-calendar4-week"></i>
+                                </a>
+                            {% endif %}
+
+                            {% if user.is_superuser %}
+                                <a href="{% url 'booking:shedule_add' trainer.user.id %}" 
+                                   class="btn btn-dark btn-sm">
+                                    Змінити розклад <i class="bi bi-calendar4-week"></i>
+                                </a>
+                                <a href="/{{ admin_path }}/users/trainer/{{ trainer.user.id }}/change/" 
+                                   class="btn btn-dark btn-sm"
+                                   title="Панель адміністратора">
+                                    Адмін <i class="bi bi-kanban-fill"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Резервації -->
+    {% if user == trainer.user or user.is_staff %}
+        <div class="col-md-10 bg-dark p-4 mt-3 rounded shadow-sm border border-warning">
+            <h4 class="text-warning">Резервації у тренера</h4>
+
+            {% for reservation in trainer.trainer_reservations.all %}
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                    <div class="text-secondary">
+                        <strong>{{ reservation.client.user.get_full_name }}</strong>
+                        <span>{{ reservation.start_date|naturalday }}</span>
+                        <span>{{ reservation.start_date|date:'H:i' }} - {{ reservation.end_date|date:'H:i' }}</span>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="text-secondary">Резервацій не має</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<!-- Модальне вікно для аватара -->
+{% with modal_image=trainer.avatar modal_title=trainer.user.get_full_name %}
+    {% include '_modal_image_preview.html' %}
+{% endwith %}
+
+{% endblock %}

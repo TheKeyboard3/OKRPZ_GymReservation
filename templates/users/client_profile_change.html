@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static main_tags %}
+
+{% block title %}
+    <title>{{ user.get_full_name }} - Профіль клієнта</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg rounded bg-dark text-light" style="max-width: 500px; width: 100%;">
+        <div class="card-body p-4">
+            <h3 class="text-center text-warning mb-4">Профіль клієнта</h3>
+            
+            <form id="profile-form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Аватар -->
+                <div class="text-center mb-4">
+                    {% if user.client_profile.avatar %}
+                        <img src="{{ user.client_profile.avatar.url }}"
+                            class="img-fluid rounded-circle border border-warning"
+                            alt="Фото ({{ user.get_full_name }})"
+                            style="width: 150px; height: 150px; object-fit: cover;">
+                        <p class="small text-secondary mt-2">{{ user.client_profile.avatar.name|basename }}</p>
+                    {% else %}
+                        <img src="{% static 'images/baseavatar.jpg' %}"
+                            class="img-fluid rounded-circle border border-warning"
+                            alt="Фото"
+                            style="max-width: 150px;">
+                    {% endif %}
+
+                    <input type="file" class="form-control mt-3"
+                        title="Виберіть фото профілю"
+                        id="id_avatar"
+                        name="avatar"
+                        accept="image/*">
+
+                    {% if profile_form.avatar.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show mt-2">
+                            {{ profile_form.avatar.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Поля форми -->
+                <div class="mb-3">
+                    <label for="id_first_name" class="form-label text-warning">Ім'я</label>
+                    <input type="text" class="form-control bg-dark text-light border-warning"
+                        value="{{ form.first_name.value|default:'' }}" 
+                        id="id_first_name"
+                        name="first_name"
+                        placeholder="Введіть ваше ім'я" 
+                        required>
+
+                    {% if form.first_name.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show mt-2">
+                            {{ form.first_name.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_last_name" class="form-label text-warning">Прізвище</label>
+                    <input type="text" class="form-control bg-dark text-light border-warning"
+                        value="{{ form.last_name.value|default:'' }}"     
+                        id="id_last_name"
+                        name="last_name"
+                        placeholder="Введіть ваше прізвище">
+
+                    {% if form.last_name.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show mt-2">
+                            {{ form.last_name.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_email" class="form-label text-warning">Email</label>
+                    <input type="email" class="form-control bg-dark text-light border-warning"
+                        value="{{ form.email.value }}" 
+                        id="id_email"
+                        name="email"
+                        required
+                        readonly>
+
+                    {% if form.email.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show mt-2">
+                            {{ form.email.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Кнопки -->
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-warning text-dark">Зберегти</button>
+                    <a class="btn btn-secondary" href="{% url 'user:detail' user.id %}">
+                        Дивитись профіль
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

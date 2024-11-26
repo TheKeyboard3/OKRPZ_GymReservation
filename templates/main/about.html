@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static main_tags %}
+
+{% block title %}
+    <title>Про {{ site_main_title }}</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="bg-dark p-5 mt-5 mb-5 rounded shadow-sm border border-warning">
+    <h1 class="text-center mb-4 text-warning">Про {{ site_main_title }}</h1>
+    <p class="text-secondary fs-5">
+        <b>{{ site_main_title }}</b> — це Тренувальний зал, через розробку якого ми пізнаємо командну розробку.
+    </p>
+    <h2 class="text-center text-warning mt-4">КОНТАКТИ</h2>
+    <p class="text-secondary fs-5">
+        З різних питань звертайтесь за адресою 
+        <i><a href="mailto:{{ support_email }}" class="text-warning">{{ support_email }}</a></i>.
+    </p>
+</div>
+
+{% endblock %}

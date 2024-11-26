@@ -1,0 +1,56 @@
+{% load static cache %}
+
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'favicons/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/create_work_schedule.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/create_reservation.css' %}" />
+
+    {% block css %}
+    {% endblock %}
+
+    {% block title %}
+        <title>
+            {% if title %}
+                {{ title }} - {{ site_main_title }}
+            {% else %}
+                {{ site_main_title }}
+            {% endif %}
+        </title>
+    {% endblock %}
+</head>
+
+<body>
+    <div class="wrapper">
+        {% include '_header.html' %}
+
+        <main class="main">
+            {% include '_notifications.html' %}
+
+            <div class="container">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </main>
+
+        {% include '_footer.html' %}
+    </div>
+
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'js/base.js' %}"></script>
+    
+    {% block script %}
+    {% endblock %}
+</body>
+
+</html>

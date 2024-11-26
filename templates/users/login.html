@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Вхід - {{ site_main_title }}</title>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="container mt-5 mb-3">
+        <div class="row justify-content-center" style="width: 3000px;">
+            <div class="col-md-6 bg-dark p-4 mx-3 rounded text-light">
+                <form class="form-signin" method="POST">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="width: 100%">
+                            <p>{{ form.non_field_errors }}</p>
+                        </div>
+                    {% endif %}
+                    
+                    {% if request.GET.next %}
+                        <input type="hidden" name="next" value="{{ request.GET.next }}">
+                    {% endif %}
+
+                    <h1 class="h3 mb-3 fw-normal text-center text-light">Вхід</h1>
+                
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control bg-dark text-light border-secondary"
+                            value="{{ form.username.value|default:'' }}"
+                            id="id_username" 
+                            name="username" 
+                            placeholder="Введіть ваш Email"
+                            autofocus="true"
+                            required>
+                        <label for="id_username" class="form-label text-secondary">Email</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control bg-dark text-light border-secondary"
+                            value="{{ form.password.value|default:'' }}"
+                            id="id_password"
+                            name="password"
+                            placeholder="Введіть ваш пароль" 
+                            required>
+                        <label for="id_password" class="form-label text-secondary">Пароль</label>
+                    </div>
+                    <button class="w-100 btn btn-lg btn-primary mt-3" type="submit">Увійти</button>
+                </form>
+
+                <div class="forgot-password mt-2 text-center">
+                    <a href="{% url 'user:password_reset' %}" class="text-light text-decoration-underline">
+                        Забули пароль?
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

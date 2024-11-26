@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static humanize main_tags %}
+
+{% block title %}
+    <title>Розклад: {{ trainer.user.get_full_name }} - {{ site_main_title }}</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5 mb-3">
+    <div class="row justify-content-center g-4">
+        <!-- Форма для додавання розкладу -->
+        <div class="col-md-6 bg-dark text-light p-4 rounded shadow">
+            <form class="form-reservation" method="POST">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <p>{{ form.non_field_errors }}</p>
+                    </div>
+                {% endif %}
+
+                <h3 class="text-warning">Додати розклад роботи тренера:</h3>
+                <h4>{{ trainer.user.get_full_name }}</h4>
+                <h5 class="mb-3">Виберіть проміжок дат</h5>
+
+                <input type="hidden" 
+                    id="id_trainer_id" 
+                    name="trainer_id" 
+                    value="{{ trainer.user.id }}" 
+                    required>
+
+                <!-- Початкова дата -->
+                <div class="form-group mb-3">
+                    <label for="id_start_date" class="form-label">Початкова дата</label>
+                    <input type="date" class="form-control" 
+                        id="id_start_date" 
+                        name="start_date" 
+                        value="{{ form.start_date.value|default:today }}"
+                        required>
+                    {% if form.start_date.errors %}
+                        <div class="alert alert-danger">{{ form.start_date.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Кінцева дата -->
+                <div class="form-group mb-3">
+                    <label for="id_end_date" class="form-label">Кінцева дата</label>
+                    <input type="date" class="form-control" 
+                        id="id_end_date" 
+                        name="end_date" 
+                        value="{{ form.end_date.value|default:default_end_date }}"
+                        required>
+                    {% if form.end_date.errors %}
+                        <div class="alert alert-danger">{{ form.end_date.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- День тижня -->
+                <div class="form-group mb-3">
+                    <label for="id_weekday" class="form-label">День тижня</label>
+                    <select class="form-select" id="id_weekday" name="weekday" required>
+                        {% for value, label in form.weekday.field.choices %}
+                            <option value="{{ value }}" {% if form.weekday.value == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if form.weekday.errors %}
+                        <div class="alert alert-danger">{{ form.weekday.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Час початку роботи -->
+                <div class="form-group mb-3">
+                    <label for="id_start_time" class="form-label">Час початку роботи</label>
+                    <input type="time" class="form-control" 
+                        id="id_start_time" 
+                        name="start_time" 
+                        value="{{ form.start_time.value|default:'08:00' }}" 
+                        required>
+                    {% if form.start_time.errors %}
+                        <div class="alert alert-danger">{{ form.start_time.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Час завершення роботи -->
+                <div class="form-group mb-3">
+                    <label for="id_end_time" class="form-label">Час завершення роботи</label>
+                    <input type="time" class="form-control" 
+                        id="id_end_time" 
+                        name="end_time" 
+                        value="{{ form.end_time.value|default:'16:00' }}" 
+                        required>
+                    {% if form.end_time.errors %}
+                        <div class="alert alert-danger">{{ form.end_time.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Кнопки -->
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-warning" type="submit">Додати розклад</button>
+                    <a class="btn btn-secondary" href="{% url 'booking:detail' id=trainer.user.id %}">Назад</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Розклад -->
+      <div class="col-md-6 bg-dark text-light p-4 rounded shadow">
+    <h4 class="text-warning">Розклад тренера</h4>
+    <div class="d-flex flex-wrap gap-3 justify-content-center">
+        {% for day in schedule_days %}
+            <div class="border p-2 rounded text-center bg-secondary text-light" style="width: 120px; flex-shrink: 0;">
+                <strong>{{ day|date:"D" }}</strong>
+                <br>
+                {{ day|date:"d.m" }}
+                <div>
+                    {% with schedule_by_day|get_item:day as schedules %}
+                        {% if schedules %}
+                            {% for schedule in schedules %}
+                                <p>{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:'H:i' }}</p>
+                            {% endfor %}
+                            <a class="btn btn-danger btn-sm mt-2" 
+                                href="{% url 'booking:schedule_remove' id=trainer.user.id date=day|date:'Y-m-d' %}">
+                                Видалити
+                            </a>
+                        {% else %}
+                            <p>Не працює</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}

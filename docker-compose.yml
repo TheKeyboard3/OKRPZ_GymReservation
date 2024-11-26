@@ -1,0 +1,50 @@
+services:
+    web:
+        container_name: booking-site-django
+        build: .
+        command: gunicorn src.core.wsgi:application --bind 0.0.0.0:8030 --preload --workers 4 --threads 2 --env DJANGO_SETTINGS_MODULE=src.core.settings.local
+        volumes:
+            - sqlite_data:/app/db
+            - media_content:/app/media
+        ports:
+            - 8030:8030
+        depends_on:
+            - redis
+        env_file: ./.env
+
+    redis:
+        container_name: booking-site-redis
+        image: redis:alpine
+        command: redis-server --appendonly yes
+        restart: always
+        ports:
+            - 6379:6379
+        volumes:
+            - redis_data:/root/redis
+            - /home/user/redis/redis.conf:/usr/local/etc/redis/redis.conf
+        env_file: ./.env.redis
+
+    celery:
+        container_name: booking-site-celery
+        build:
+            context: .
+        command: >
+            sh -c "celery -A core.celery worker --pool=solo --loglevel=info"
+        volumes:
+            - .:/app
+        depends_on:
+            - redis
+        env_file: ./.env
+
+    nginx:
+        container_name: booking-site-nginx
+        build: ./nginx
+        ports:
+            - 1338:8000
+        depends_on:
+            - web
+
+volumes:
+    sqlite_data:
+    redis_data:
+    media_content:

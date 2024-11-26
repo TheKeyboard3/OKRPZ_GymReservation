@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static cache %}
+
+{% block content %}
+
+<div class="site-error 404 bg-white mt-5 mb-4 p-4 rounded">
+    <h2>Сторінку не знайдено</h2>
+    <p class="description">{{ exception }}</p>
+    <h5 class="to-home">Повернутися на <a href="{% url 'main:index' %}">головну</a></Р>
+</div>
+
+{% endblock %}

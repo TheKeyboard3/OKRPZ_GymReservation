@@ -1,0 +1,19 @@
+{% load static humanize main_tags %}
+
+<div class="notifications-container text-center">
+    <div class="notification">
+        {% if messages %}
+            {% for message in messages %}
+                <div id="notification"
+                    class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} fade show" 
+                    role="alert">
+                    {{ message.message|clear_tags|safe }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div id="jq-notification" class="position-relative start-50 translate-middle-x z-3 alert alert-success fade show" style="display: none;" role="alert">
+                {{ message }}
+            </div>
+        {% endif %}
+    </div>
+</div>
