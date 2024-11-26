@@ -139,7 +139,6 @@ GitHub.sublime-settings
 Dockerfile.prod
 docker-compose.prod.yml
 entrypoint.prod.sh
-README.dev.md
 README.prod.md
 default.conf
 dump.sql
