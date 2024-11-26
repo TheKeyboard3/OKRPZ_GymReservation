@@ -5,12 +5,12 @@ from django.urls import reverse
 from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponseBadRequest
 from django.utils.timezone import datetime
-
 from core.settings.base import APP_NAME, SITE_SUPPORT_EMAIL
 from main.tasks import send_email
 from users.models import TrainerProfile
 from booking.models import Reservation, WorkSchedule
 from booking.mixins import AdminOnlyMixin
+
 
 logger = logging.getLogger(__name__)
 
@@ -54,5 +54,5 @@ class RemoveWorkSchedule(AdminOnlyMixin, View):
 
         if reservations_deleted_count > 0:
             return HttpResponseBadRequest('Резервації були видалені, але розклад не знайдено')
-        
+
         return HttpResponseBadRequest('Розклад для вказаної дати не знайдено')

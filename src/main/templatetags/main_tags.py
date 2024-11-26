@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 import humanize
 import bleach
 
+
 register = template.Library()
 months_ukr = [
     'січня', 'лютого', 'березня', 'квітня', 'травня', 'червня',

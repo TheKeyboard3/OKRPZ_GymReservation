@@ -5,10 +5,11 @@ from django.contrib import messages
 from django.utils.timezone import datetime, timedelta
 from django.views.generic import FormView
 from core.settings.base import WEEKS
-from users.models import TrainerProfile, ClientProfile, User
-from booking.models import Departament, Reservation, WorkSchedule
+from users.models import TrainerProfile
+from booking.models import Reservation, WorkSchedule
 from booking.mixins import NotTrainerRequiredMixin
 from booking.forms import CreateReservationForm
+
 
 logger = logging.getLogger(__name__)
 
@@ -108,11 +109,11 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
         user_reservations = Reservation.objects.filter(
             client=self.request.user.profile, trainer=trainer)
         context['user_reservations'] = user_reservations
-        
+
         schedule_days, schedule_by_day = self.get_schedule_data(trainer)
 
         daily_work_schedules = schedule_by_day.get(selected_date.date(), [])
-        
+
         if not daily_work_schedules:
             context.update({
                 'available_slots': [],
@@ -138,9 +139,11 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
         kwargs = super().get_form_kwargs()
         trainer = self.get_trainer()  # Отримуємо тренера
         available_slots = self.get_available_slots()  # Додаємо доступні слоти
-        available_departaments = trainer.departaments.all()  # Додаємо доступні департаменти для тренера
+        # Додаємо доступні департаменти для тренера
+        available_departaments = trainer.departaments.all()
         kwargs['available_slots'] = available_slots  # Додаємо доступні слоти
-        kwargs['available_departaments'] = available_departaments  # Додаємо департаменти
+        # Додаємо департаменти
+        kwargs['available_departaments'] = available_departaments
         return kwargs
 
     def form_valid(self, form):
@@ -149,9 +152,10 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
         client = self.request.user.profile
         time_slot = form.cleaned_data['time_slot']
         departament = form.cleaned_data['departament']
-        
+
         if departament not in trainer.departaments.all():
-            form.add_error('departament', 'Вибраний департамент не належить цьому тренеру.')
+            form.add_error(
+                'departament', 'Вибраний департамент не належить цьому тренеру.')
             return self.form_invalid(form)
 
         # Розбираємо часовий слот
@@ -176,7 +180,7 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
 
         messages.success(self.request, 'Резервацію створено успішно!')
         return super().form_valid(form)
-    
+
     def form_invalid(self, form: CreateReservationForm):
         messages.error(self.request, 'Щось пішло не так!')
         return self.render_to_response(self.get_context_data(form=form))

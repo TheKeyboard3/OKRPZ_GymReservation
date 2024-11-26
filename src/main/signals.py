@@ -1,7 +1,6 @@
-from django.db.models.signals import post_migrate, pre_save
+from django.db.models.signals import post_migrate
 from django.contrib.sites.models import Site
 from django.dispatch import receiver
-from django.utils import timezone
 from django.conf import settings
 
 
