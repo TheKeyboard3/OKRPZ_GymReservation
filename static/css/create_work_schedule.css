@@ -1,0 +1,60 @@
+.bg-dark {
+    background-color: #1f1f1f !important;
+}
+
+.text-light {
+    color: #e0e0e0 !important;
+}
+
+.text-warning {
+    color: #f5c518 !important;
+}
+
+.table-dark th, .table-dark td {
+    vertical-align: middle;
+}
+.bg-secondary {
+    background-color: #3c3c3c !important;
+}
+
+.border {
+    border: 1px solid #6c757d;
+}
+
+.text-light {
+    color: #e0e0e0 !important;
+}
+
+.text-warning {
+    color: #f5c518 !important;
+}
+
+.rounded {
+    border-radius: 0.5rem;
+}
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 колонок для 7 днів */
+    gap: 10px; /* Проміжок між днями */
+}
+
+.day {
+    min-width: 100px;
+    text-align: center;
+    padding: 10px;
+    background-color: #3c3c3c;
+    border: 1px solid #6c757d;
+    border-radius: 5px;
+}
+
+.text-light {
+    color: #e0e0e0 !important;
+}
+
+.text-warning {
+    color: #f5c518 !important;
+}
+
+.week {
+    display: contents; /* Група тижня виглядає як частина сітки */
+}

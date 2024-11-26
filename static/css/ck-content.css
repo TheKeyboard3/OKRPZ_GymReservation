@@ -1,0 +1,36 @@
+.ck-content 
+{
+    padding: 30px 30px;
+}
+
+.ck-content img 
+{
+    padding: 0;
+    max-width: 100%;
+    height: auto;
+}
+ 
+.ck-content blockquote p
+{
+    padding: 20px;
+    background-color: aqua;
+    border-style:solid;
+    border-color: rgb(72, 145, 228);
+}
+
+.ck-content pre
+{
+    background-color: rgb(233, 233, 233);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+figure.media {
+    justify-content: center;
+    width: auto;
+    height: 130%;
+}
+
+.ck-editor__editable_inline  {
+    min-height: 120px !important;
+}
