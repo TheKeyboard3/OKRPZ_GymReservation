@@ -4,7 +4,9 @@ from booking.views.CreateReservation import *
 from booking.views.CreateWorkShedule import *
 from booking.views.RemoveWorkSchedule import *
 
+
 app_name = 'booking'
+
 
 urlpatterns = [
     path('trainers/',
@@ -16,7 +18,7 @@ urlpatterns = [
     path('trainers/<int:id>/schedule/add/',
          CreateWorkShedule.as_view(), name='shedule_add'),
     path('trainers/<int:id>/schedule/remove/<str:date>/',
-        RemoveWorkSchedule.as_view(), name='schedule_remove'),
+         RemoveWorkSchedule.as_view(), name='schedule_remove'),
     path('reservation/<int:id>/delete/',
          views.DeleteReservationView.as_view(), name='reservation_delete'),
 ]

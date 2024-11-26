@@ -1,6 +1,5 @@
 from django.http import HttpRequest
 from django.contrib.auth.mixins import AccessMixin
-from users.models import ClientProfile, TrainerProfile
 
 
 class AdminOnlyMixin(AccessMixin):

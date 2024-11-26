@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
-
 from main.views import NotFoundView
+
 
 urlpatterns = [
     path(f'{settings.ADMIN_PATH}/login/', NotFoundView.as_view()),
