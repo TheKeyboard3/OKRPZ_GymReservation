@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.http import Http404, HttpRequest
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
@@ -9,6 +10,7 @@ from django.views import View
 from core.settings.base import APP_NAME, MEDIA_ROOT, TOKEN_LIFETIME
 from main.tasks import send_email
 from main.services import create_image
+from booking.models import Reservation
 from booking.mixins import ClientOnlyMixin, TrainerOnlyMixin
 from users.tasks import clear_user_token
 from users.models import User
@@ -212,9 +214,13 @@ class ClientProfileDetailView(LoginRequiredMixin, View):
 
         if not hasattr(user, 'client_profile'):
             raise Http404('У цей користувач не є клієнтом')
+        
+        reservations = Reservation.objects.filter(
+            start_date__gt=datetime.now()
+        ).select_related('trainer__user', 'departament')
 
         context = {
-            'title': user.get_full_name(),
             'detail_user': user,
+            'client_reservations': reservations
         }
         return render(request, 'users/client_profile.html', context)
