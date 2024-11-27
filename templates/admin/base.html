@@ -8,6 +8,50 @@
 {% block dark-mode-vars %}
   <link rel="stylesheet" href="{% static "admin/css/dark_mode.css" %}">
   <script src="{% static "admin/js/theme.js" %}" defer></script>
+     <style>
+        body {
+            background-color: #121212; /* Темний фон */
+            color: #ffc107; /* Світло-сірий текст */
+        }
+
+        a {
+            color: #ffc107; /* Жовті посилання */
+        }
+
+        a:hover {
+            color: #e0a800; /* Темніша жовта при наведенні */
+        }
+
+        .btn {
+            background-color: #ffc107; /* Жовта кнопка */
+            border-color: #ffc107;
+        }
+
+        .btn:hover {
+            background-color: #e0a800;
+            border-color: #e0a800;
+        }
+
+        .navbar {
+            background-color: #1c1c1c; /* Темно-сірий фон навігації */
+        }
+
+        .nav-link {
+            color: #ffc107; /* Жовті посилання в навігації */
+        }
+
+        .nav-link:hover {
+            color: #e0a800;
+        }
+
+        .footer {
+            background-color: #1c1c1c;
+            color: #e0e0e0;
+            text-align: center;
+            padding: 10px 0;
+        }
+    </style>
+
 {% endblock %}
 {% if not is_popup and is_nav_sidebar_enabled %}
   <link rel="stylesheet" href="{% static "admin/css/nav_sidebar.css" %}">
