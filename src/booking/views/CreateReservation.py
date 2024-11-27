@@ -144,17 +144,14 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
         kwargs['available_departaments'] = available_departaments
         return kwargs
 
-    def form_valid(self, form):
+    def form_valid(self, form: CreateReservationForm):
         """Обробка форми після успішної валідації."""
+
         trainer = self.get_trainer()
         client = self.request.user.profile
         time_slot = form.cleaned_data['time_slot']
         departament = form.cleaned_data['departament']
-
-        if departament not in trainer.departaments.all():
-            form.add_error(
-                'departament', 'Вибраний департамент не належить цьому тренеру.')
-            return self.form_invalid(form)
+        reservation_date = form.cleaned_data['date']
 
         # Розбираємо часовий слот
         start_time, end_time = map(str.strip, time_slot.split(' - '))
@@ -166,6 +163,16 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
             form.cleaned_data['date'],
             datetime.strptime(end_time, '%H:%M').time()
         )
+
+        if reservation_date > (datetime.today() + timedelta(weeks=WEEKS)).date():
+            form.add_error('date', 
+                           f'Резервування не може бути пізніше ніж на {WEEKS} тижні вперед.')
+            return self.form_invalid(form)
+
+        if departament not in trainer.departaments.all():
+            form.add_error('departament', 
+                           'Вибраний департамент не належить цьому тренеру.')
+            return self.form_invalid(form)
 
         # Створюємо резервацію
         Reservation.objects.create(
