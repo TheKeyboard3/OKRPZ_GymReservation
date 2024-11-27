@@ -7,136 +7,118 @@
 
 {% block content %}
 
-<div class="row justify-content-center mt-5">
-    <div class="col-md-6 bg-dark p-5 rounded shadow-sm border border-warning">
-        <h3 class="text-center mb-4 text-warning">Профіль тренера</h3>
-        
-        <form id="profile-form" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
+<div class="row">
+    <div class="col-md-5">
+        <div class="bg-white mt-5 mb-4 p-4 rounded">
+            <h3 class="text-center mb-4">Профіль тренера</h3>
+            
+            <form id="profile-form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
 
-            <div class="row">
-                <!-- Аватар -->
-                <div class="col-md-4 d-flex justify-content-center align-items-center text-center p-3">
-                    {% if user.trainer_profile.avatar %}
-                        <img src="{{ user.trainer_profile.avatar.url }}" 
-                            class="img-fluid rounded-circle border border-warning"
-                             title="{{ user.trainer_profile.avatar.name|basename }}" 
-                             alt="{{ user.trainer_profile.avatar.name|basename }}" 
-                             style="width: 150px; height: 150px; object-fit: cover;">
-                        <p class="small text-secondary">Зараз: {{ user.trainer_profile.avatar.name|basename }}</p>
-                    {% else %}
-                        <img src="{% static 'images/baseavatar.jpg' %}" 
-                             class="img-fluid rounded-circle border border-warning" 
-                             alt="Фото" 
-                             style="width: 150px; height: 150px; object-fit: cover;">
-                    {% endif %}
+                <div class="row">
+                    <div class="col-md-12 mb-3 text-center">
+                        {% if user.trainer_profile.avatar %}
+                            <img src="{{ user.trainer_profile.avatar.url }}"
+                                class="img-fluid rounded-circle"
+                                title="{{ user.trainer_profile.avatar.name|basename }}"
+                                alt="{{ user.trainer_profile.avatar.name|basename }}" 
+                                style="max-width: 150px;">
+                            <p class="small">зараз: {{ user.trainer_profile.avatar.name|basename }}</p>
+                        {% else %}
+                            <img src="{% static 'images/baseavatar.jpg' %}"
+                                alt="Фото" class="img-fluid rounded-circle"
+                                style="max-width: 150px;">
+                        {% endif %}
+                        
+                        <input type="file" class="form-control"
+                            title="Виберіть фото профілю"
+                            id="id_avatar"
+                            name="avatar"
+                            accept="image/*">
+
+                        {% if profile_form.avatar.errors %}
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                {{ profile_form.avatar.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label for="id_first_name" class="form-label">Ім'я</label>
+                        <input type="text" class="form-control" 
+                            value="{{ form.first_name.value|default:'' }}" 
+                            id="id_first_name"
+                            name="first_name"
+                            placeholder="Введіть ваше ім'я" 
+                            required>
+
+                        {% if form.first_name.errors %}
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                {{ form.first_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label for="id_last_name" class="form-label">Прізвище</label>
+                        <input type="text" class="form-control" 
+                            value="{{ form.last_name.value|default:'' }}"     
+                            id="id_last_name"
+                            name="last_name"
+                            placeholder="Введіть ваше прізвище">
+
+                        {% if form.last_name.errors %}
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                {{ form.last_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label for="id_email" class="form-label">Email</label>
+                        <input type="email" class="form-control" 
+                            value="{{ form.email.value }}" 
+                            id="id_email"
+                            name="email"
+                            required
+                            readonly>
+
+                        {% if form.email.errors %}
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                {{ form.email.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label for="id_phone_number" class="form-label">Номер телефону</label>
+                        <input type="text" class="form-control" 
+                            value="{{ profile_form.phone_number.value|default:'' }}" 
+                            id="id_phone_number"
+                            name="phone_number"
+                            placeholder="Введіть ваш номер телефону" 
+                            required>
+
+                        {% if profile_form.phone_number.errors %}
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                {{ profile_form.phone_number.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label for="id_bio" class="form-label">Опис</label>
+                        <textarea class="form-control" 
+                            id="id_bio" 
+                            name="bio" 
+                            placeholder="Опишіть себе">{{ profile_form.bio.value|default:'' }}</textarea>
                     
-               
+                        {% if profile_form.bio.errors %}
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                {{ profile_form.bio.errors }}</div>
+                        {% endif %}
+                    </div>
                 </div>
-   
-                <!-- Ім'я -->
-                <div class="col-md-12 mb-3">
-                    <input type="file" class="form-control mt-3 border border-warning" 
-                    title="Виберіть фото профілю" 
-                    id="id_avatar" 
-                    name="avatar" 
-                    accept="image/*">
-    
-             {% if profile_form.avatar.errors %}
-                 <div class="alert alert-danger alert-dismissible fade show mt-2">
-                     {{ profile_form.avatar.errors }}
-                 </div>
-             {% endif %}
-                    <label for="id_first_name" class="form-label text-secondary">Ім'я</label>
-                    <input type="text" 
-                           class="form-control border border-warning" 
-                           value="{{ form.first_name.value|default:'' }}" 
-                           id="id_first_name" 
-                           name="first_name" 
-                           placeholder="Введіть ваше ім'я" 
-                           required>
-
-                    {% if form.first_name.errors %}
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            {{ form.first_name.errors }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Прізвище -->
-                <div class="col-md-12 mb-3">
-                    <label for="id_last_name" class="form-label text-secondary">Прізвище</label>
-                    <input type="text" 
-                           class="form-control border border-warning" 
-                           value="{{ form.last_name.value|default:'' }}" 
-                           id="id_last_name" 
-                           name="last_name" 
-                           placeholder="Введіть ваше прізвище">
-
-                    {% if form.last_name.errors %}
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            {{ form.last_name.errors }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Email -->
-                <div class="col-md-12 mb-3">
-                    <label for="id_email" class="form-label text-secondary">Email</label>
-                    <input type="email" style="background-color:#3a3a3a"
-                           class="form-control border border-warning" 
-                           value="{{ form.email.value }}" 
-                           id="id_email" 
-                           name="email" 
-                           readonly>
-
-                    {% if form.email.errors %}
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            {{ form.email.errors }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Телефон -->
-                <div class="col-md-12 mb-3">
-                    <label for="id_phone_number" class="form-label text-secondary">Номер телефону</label>
-                    <input type="text" 
-                           class="form-control border border-warning" 
-                           value="{{ profile_form.phone_number.value|default:'' }}" 
-                           id="id_phone_number" 
-                           name="phone_number" 
-                           placeholder="Введіть ваш номер телефону" 
-                           required>
-
-                    {% if profile_form.phone_number.errors %}
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            {{ profile_form.phone_number.errors }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Опис -->
-                <div class="col-md-12 mb-3">
-                    <label for="id_bio" class="form-label text-secondary">Опис</label>
-                    <textarea class="form-control border border-warning" 
-                              id="id_bio" 
-                              name="bio" 
-                              placeholder="Опишіть себе">{{ profile_form.bio.value|default:'' }}</textarea>
-
-                    {% if profile_form.bio.errors %}
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            {{ profile_form.bio.errors }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Кнопки -->
-            <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-warning">Зберегти</button>
-                <a class="btn btn-dark" href="{% url 'booking:detail' user.id %}">Дивитись профіль</a>
-            </div>
-        </form>
+                <button type="submit" class="btn btn-success">Зберегти</button>
+                
+                <a class="btn btn-dark float-right" href="{% url 'booking:detail' user.id %}">
+                    Дивитись профіль
+                </a>
+            </form>
+        </div>
     </div>
 </div>
 
