@@ -1,13 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse, resolve
-from main.views import IndexView, AboutView
+from main.views import AboutView
 
 
 class TestMainUrls(TestCase):
-
-    def test_index_url(self):
-        self.assertEqual(reverse('main:index'), '/')
-        self.assertEqual(resolve('/').func.view_class, IndexView)
 
     def test_about_url(self):
         self.assertEqual(reverse('main:about'), '/about')

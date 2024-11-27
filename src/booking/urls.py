@@ -9,8 +9,7 @@ app_name = 'booking'
 
 
 urlpatterns = [
-    path('trainers/',
-         views.TrainersListView.as_view(), name='trainers'),
+    path('', views.TrainersListView.as_view(), name='trainers'),
     path('trainers/<int:id>/',
          views.TrainerDetailView.as_view(), name='detail'),
     path('trainers/<int:id>/reservation',

@@ -4,12 +4,6 @@ from django.views import View
 from core.settings.base import SITE_SUPPORT_EMAIL
 
 
-class IndexView(View):
-
-    def get(self, request: HttpRequest):
-        return render(request, 'main/index.html')
-
-
 class AboutView(View):
 
     def get(self, request: HttpRequest):

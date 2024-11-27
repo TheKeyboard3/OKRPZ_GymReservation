@@ -76,8 +76,8 @@ class TrainerProfileChangeView(TrainerOnlyMixin, View):
     def post(self, request):
         form = UserEditForm(data=request.POST, instance=request.user)
         profile_form = TrainerProfileEditForm(data=request.POST,
-                                             instance=request.user.profile,
-                                             files=request.FILES)
+                                              instance=request.user.profile,
+                                              files=request.FILES)
 
         if form.is_valid() and profile_form.is_valid():
             form.save()
@@ -94,7 +94,7 @@ class TrainerProfileChangeView(TrainerOnlyMixin, View):
 class LogoutView(View):
 
     def get(self, request: HttpRequest):
-        next_page = request.GET.get('next', 'main:index')
+        next_page = request.GET.get('next', 'booking:trainers')
 
         if request.user.is_authenticated:
             messages.success(request, 'Ви вийшли з акаунта')
