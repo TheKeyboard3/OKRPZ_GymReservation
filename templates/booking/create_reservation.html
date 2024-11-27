@@ -78,6 +78,32 @@
                     <a class="btn btn-secondary" href="{% url 'booking:detail' id=trainer.user.id %}">Назад</a>
                 </div>
             </form>
+
+            {% if user_reservations %}
+                <div class="reservations mt-5">
+                    <h4>Ваші резервації</h4>
+
+                    {% for reservation in user_reservations %}
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                            <div>
+                                <strong>{{ reservation.start_date|naturalday }}</strong>
+                                <text title="Відділення">({{ reservation.departament.title }}) </text>
+                                <p title="К-сть годин: {{ reservation.duration_in_hours }}">
+                                    {{ reservation.start_date|date:'H:i' }} - {{ reservation.end_date|date:'H:i' }}
+                                </p>
+                            </div>
+                            
+                            <form method="POST" 
+                                action="{% url 'booking:reservation_delete' reservation.id %}" >
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Скасувати
+                                </button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
         <!-- Розклад -->

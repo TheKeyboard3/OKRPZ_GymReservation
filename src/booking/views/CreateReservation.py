@@ -1,4 +1,3 @@
-import logging
 from django.http import Http404
 from django.urls import reverse
 from django.contrib import messages
@@ -9,9 +8,6 @@ from users.models import TrainerProfile
 from booking.models import Reservation, WorkSchedule
 from booking.mixins import NotTrainerRequiredMixin
 from booking.forms import CreateReservationForm
-
-
-logger = logging.getLogger(__name__)
 
 
 class CreateReservationView(NotTrainerRequiredMixin, FormView):
@@ -107,7 +103,9 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
         selected_date = self.get_selected_date()
         trainer = self.get_trainer()
         user_reservations = Reservation.objects.filter(
-            client=self.request.user.profile, trainer=trainer)
+            client=self.request.user.profile, 
+            trainer=trainer,
+            start_date__gt=datetime.now())
         context['user_reservations'] = user_reservations
 
         schedule_days, schedule_by_day = self.get_schedule_data(trainer)
