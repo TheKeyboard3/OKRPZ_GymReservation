@@ -89,9 +89,4 @@
     {% endif %}
 </div>
 
-<!-- Модальне вікно для аватара -->
-{% with modal_image=trainer.avatar modal_title=trainer.user.get_full_name %}
-    {% include '_modal_image_preview.html' %}
-{% endwith %}
-
 {% endblock %}

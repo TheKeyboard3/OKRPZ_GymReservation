@@ -293,7 +293,7 @@ img {
 .filters__label {
 	position: relative;
 	padding-left: 20px;
-	background-image: url(../img/ellipse.png);
+	background-image: url(../imgages/ellipse.png);
 	background-repeat: no-repeat;
 	background-position: left center;
 	background-size: 14px 14px;
@@ -304,7 +304,7 @@ img {
 }
 
 .filters__input:checked + .filters__label {
-	background-image: url(../img/ellipse-checked.png);
+	background-image: url(../imgages/ellipse-checked.png);
 }
 
 .filters__submit {
