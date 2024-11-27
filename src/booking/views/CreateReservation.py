@@ -184,4 +184,4 @@ class CreateReservationView(NotTrainerRequiredMixin, FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
     def get_success_url(self):
-        return reverse('booking:reservation', kwargs={'id': self.kwargs['id']})
+        return self.request.META.get('HTTP_REFERER', '/')
