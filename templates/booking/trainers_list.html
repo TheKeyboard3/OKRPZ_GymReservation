@@ -141,8 +141,9 @@
                     <img {% if trainer.avatar %}
                             src="{{ trainer.avatar.url }}"
                         {% else %}
-                            src="{% static 'images/not_found_image.png' %}" style="background-color: #000;"
+                            src="{% static 'images/baseavatar.jpg' %}" style="background-color: #000;"
                         {% endif %}
+                        title="Фотографія профіля відсутня"
                         alt="{{ trainer.user.get_full_name }}" class="trainer__img">
                     <h2 class="trainer__name">{{ trainer.user.get_full_name }}</h2>
                     <a class="trainer__show-more" href="{% url 'booking:detail' trainer.user.id %}">ПОКАЗАТИ</a>
