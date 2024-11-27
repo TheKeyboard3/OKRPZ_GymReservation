@@ -121,10 +121,14 @@
                                     {% for schedule in schedules %}
                                         <p>{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:'H:i' }}</p>
                                     {% endfor %}
-                                    <a class="btn btn-primary btn-sm mt-2" 
+                                    {% if day|date:"Y-m-d" == selected_date %}
+                                        <p class="text-success">Обрано</p>
+                                    {% else %}
+                                        <a class="btn btn-primary btn-sm mt-2" 
                                         href="{% url 'booking:reservation' id=trainer.user.id %}?date={{ day|date:'Y-m-d' }}">
                                         Обрати
-                                    </a>
+                                        </a>
+                                    {% endif %}
                                 {% else %}
                                     <p>Не працює</p>
                                 {% endif %}
