@@ -7,159 +7,106 @@
 
 {% block content %}
 
-<div class="row">
-    
-    <div class="container mt-5 mb-3">
-        <div class="row justify-content-center">
-
-            <div class="col-md-6 bg-white p-4 rounded">
+<div class="container mt-5 mb-3">
+    <div class="row justify-content-center g-4">
+        <!-- Форма для бронювання -->
+        <div class="col-md-6 bg-dark text-light p-4 rounded shadow">
+            <h3 class="text-warning">Забронювати час у тренера:</h3>
+            <h4>{{ trainer.user.get_full_name }}</h4>
+            <form method="POST">
+                {% csrf_token %}
                 
-                <h3>{{ trainer.user.get_full_name }} забронювати час на {{ selected_date|month }}</h3>
-                <form method="POST">
-                    {% csrf_token %}
+                <input type="hidden" 
+                    id="id_trainer_id" 
+                    name="trainer_id" 
+                    value="{{ trainer.user.id }}" 
+                    readonly>
+                
+                <!-- Вибір дати -->
+                <div class="form-group mb-3">
+                    <label for="id_date" class="form-label">Дата бронювання</label>
+                    <input type="date" class="form-control" 
+                        id="id_date" 
+                        name="date" 
+                        value="{{ selected_date }}"
+                        readonly style="background-color: #2e2e2e;">
                     
-                    <input type="hidden" 
-                        id="id_trainer_id" 
-                        name="trainer_id" 
-                        value="{{ trainer.user.id }}" 
-                        readonly>
-                    
-                    <!-- Вибір дати -->
-                    <div class="form-group">
-                        <label for="id_date">Дата бронювання</label>
-                        <input class="form-control" 
-                            type="date" 
-                            id="id_date" 
-                            name="date" 
-                            value="{{ selected_date }}"
-                            readonly>
-                        
-                        {% if form.date.errors %}
-                            <div class="alert alert-danger">{{ form.date.errors }}</div>
-                        {% endif %}
-                    </div>
+                    {% if form.date.errors %}
+                        <div class="alert alert-danger">{{ form.date.errors }}</div>
+                    {% endif %}
+                </div>
 
-                    <div class="form-group">
-                        <label for="id_departament">Виберіть відділення:</label>
-                        <select class="form-control" 
-                            id="id_departament" 
-                            name="departament">
-                            {% for departament in trainer.departaments.all %}
-                                <option value="{{ departament.id }}">{{ departament.title }}</option>
+                <!-- Вибір відділення -->
+                <div class="form-group mb-3">
+                    <label for="id_departament" class="form-label">Виберіть відділення:</label>
+                    <select class="form-select" id="id_departament" name="departament">
+                        {% for departament in trainer.departaments.all %}
+                            <option value="{{ departament.id }}">{{ departament.title }}</option>
+                        {% endfor %}
+                    </select>
+
+                    {% if form.departament.errors %}
+                        <div class="alert alert-danger">{{ form.departament.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Вибір проміжків часу -->
+                {% if available_slots %}
+                    <div class="form-group mb-3">
+                        <label for="time_slot" class="form-label">Доступні проміжки часу:</label>
+                        <select class="form-select" id="id_time_slot" name="time_slot">
+                            {% for slot in available_slots %}
+                                <option value="{{ slot }}">{{ slot }}</option>
                             {% endfor %}
                         </select>
-                
-                        {% if form.departament.errors %}
-                            <div class="alert alert-danger">{{ form.departament.errors }}</div>
+
+                        {% if form.time_slot.errors %}
+                            <div class="alert alert-danger">{{ form.time_slot.errors }}</div>
                         {% endif %}
                     </div>
+                {% else %}
+                    <p class="text-danger">
+                        {{ error|default:"На обрану дату немає доступного часу." }}
+                    </p>
+                {% endif %}
 
-                    <!-- Вибір проміжків часу -->
-                    {% if available_slots %}
-                        <div class="form-group">
-                            <label for="time_slot">Доступні проміжки часу:</label>
-                            <select class="form-control" 
-                                id="id_time_slot" 
-                                name="time_slot">
-                                {% for slot in available_slots %}
-                                    <option value="{{ slot }}">{{ slot }}</option>
-                                {% endfor %}
-                            </select>
-
-                            {% if form.time_slot.errors %}
-                                <div class="alert alert-danger">{{ form.time_slot.errors }}</div>
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <p class="text-danger">
-                            {{ error|default:"На обрану дату немає доступного часу." }}
-                        </p>
-                    {% endif %}
-            
-                    <!-- Кнопка відправлення -->
-                    <div class="form-group mt-3">
-                        <button type="submit" class="btn btn-primary" {% if not available_slots %}disabled{% endif %}>
-                            Забронювати
-                        </button>
-
-                        <a class="btn btn-primary"
-                            href="{% url 'booking:detail' id=trainer.user.id %}">
-                            Назад
-                        </a>
-                    </div>
-                </form>
-            </div>
-
-            <div class="col-md-6 bg-white p-4 rounded">
-                <h4>Розклад тренера</h4>
-                <table class="table table-bordered text-center">
-                    <thead>
-                        <tr>
-                            {% for day in schedule_days %}
-                                <th title="{{ day|date:'l' }} {{ day|month }}">
-                                    {{ day|date:'D' }}<br>{{ day|date:'d.m' }}
-                                </th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            {% for day in schedule_days %}
-                                <td>
-                                    {% with schedule_by_day|get_item:day as schedules %}
-                                        {% if schedules %}
-                                            {% for schedule in schedules %}
-                                                <p title="{{ day|date:'l' }} з {{ schedule.start_time|time:'H:i' }} до {{ schedule.end_time|time:'H:i' }}">
-                                                    {{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:'H:i' }}
-                                                </p>
-                                            {% endfor %}
-
-                                            {% if day|date:'Y-m-d' != selected_date %}
-                                                <a class="btn btn-primary btn-sm" 
-                                                    href="{% url 'booking:reservation' id=trainer.user.id %}?date={{ day|date:'Y-m-d' }}">
-                                                    Обрати
-                                                </a>
-                                            {% else %}
-                                                <a class="btn btn-warning btn-sm" 
-                                                    href="{% url 'booking:reservation' id=trainer.user.id %}?date={{ day|date:'Y-m-d' }}">
-                                                    Обрано
-                                                </a>
-                                            {% endif %}
-                                        {% else %}
-                                            <p>Не працює</p>
-                                        {% endif %}
-                                    {% endwith %}
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            {% if user_reservations %}
-                <div class="col-md-10 bg-white p-4 mt-3 rounded">
-                    <h4>Ваш зарезервований час у цього тренера</h4>
-
-                    {% for reservation in user_reservations %}
-                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
-                            <div>
-                                <strong>{{ reservation.start_date|naturalday }}</strong>
-                                {{ reservation.start_date|date:'H:i' }} - {{ reservation.end_date|date:'H:i' }}
-                            </div>
-                            
-                            <form class="mb-0"
-                                method="POST" 
-                                action="{% url 'booking:reservation_delete' reservation.id %}" >
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    <i class="bi bi-trash"></i> Скасувати
-                                </button>
-                            </form>
-                        </div>
-                    {% endfor %}
+                <!-- Кнопка відправлення -->
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-warning" {% if not available_slots %}disabled{% endif %} style="margin-right: 5px;">
+                        Забронювати
+                    </button>
+                    <a class="btn btn-secondary" href="{% url 'booking:detail' id=trainer.user.id %}">Назад</a>
                 </div>
-            {% endif %}
+            </form>
+        </div>
 
+        <!-- Розклад -->
+        <div class="col-md-6 bg-dark text-light p-4 rounded shadow">
+            <h4 class="text-warning">Розклад тренера</h4>
+            <div class="d-flex flex-wrap gap-3 justify-content-center">
+                {% for day in schedule_days %}
+                    <div class="border p-2 rounded text-center bg-secondary text-light" style="width: 120px; flex-shrink: 0;">
+                        <strong>{{ day|date:"D" }}</strong>
+                        <br>
+                        {{ day|date:"d.m" }}
+                        <div>
+                            {% with schedule_by_day|get_item:day as schedules %}
+                                {% if schedules %}
+                                    {% for schedule in schedules %}
+                                        <p>{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:'H:i' }}</p>
+                                    {% endfor %}
+                                    <a class="btn btn-primary btn-sm mt-2" 
+                                        href="{% url 'booking:reservation' id=trainer.user.id %}?date={{ day|date:'Y-m-d' }}">
+                                        Обрати
+                                    </a>
+                                {% else %}
+                                    <p>Не працює</p>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

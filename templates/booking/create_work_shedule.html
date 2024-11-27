@@ -8,8 +8,9 @@
 {% block content %}
 
 <div class="container mt-5 mb-3">
-    <div class="row justify-content-center">
-        <div class="col-md-6 bg-white p-4 rounded">
+    <div class="row justify-content-center g-4">
+        <!-- Форма для додавання розкладу -->
+        <div class="col-md-6 bg-dark text-light p-4 rounded shadow">
             <form class="form-reservation" method="POST">
                 {% csrf_token %}
                 {% if form.non_field_errors %}
@@ -18,9 +19,9 @@
                     </div>
                 {% endif %}
 
-                <h3>Додати розклад роботи тренера:</h3>
-                <h3>{{ trainer.user.get_full_name }}</h3>
-                <h5>Виберіть проміжок дат</h3>
+                <h3 class="text-warning">Додати розклад роботи тренера:</h3>
+                <h4>{{ trainer.user.get_full_name }}</h4>
+                <h5 class="mb-3">Виберіть проміжок дат</h5>
 
                 <input type="hidden" 
                     id="id_trainer_id" 
@@ -28,7 +29,8 @@
                     value="{{ trainer.user.id }}" 
                     required>
 
-                <div class="form-group mt-3">
+                <!-- Початкова дата -->
+                <div class="form-group mb-3">
                     <label for="id_start_date" class="form-label">Початкова дата</label>
                     <input type="date" class="form-control" 
                         id="id_start_date" 
@@ -39,8 +41,9 @@
                         <div class="alert alert-danger">{{ form.start_date.errors }}</div>
                     {% endif %}
                 </div>
-                
-                <div class="form-group mt-3">
+
+                <!-- Кінцева дата -->
+                <div class="form-group mb-3">
                     <label for="id_end_date" class="form-label">Кінцева дата</label>
                     <input type="date" class="form-control" 
                         id="id_end_date" 
@@ -52,9 +55,10 @@
                     {% endif %}
                 </div>
 
-                <div class="form-group mt-3">
+                <!-- День тижня -->
+                <div class="form-group mb-3">
                     <label for="id_weekday" class="form-label">День тижня</label>
-                    <select class="form-control" id="id_weekday" name="weekday" required>
+                    <select class="form-select" id="id_weekday" name="weekday" required>
                         {% for value, label in form.weekday.field.choices %}
                             <option value="{{ value }}" {% if form.weekday.value == value %}selected{% endif %}>
                                 {{ label }}
@@ -66,7 +70,8 @@
                     {% endif %}
                 </div>
 
-                <div class="form-group mt-3">
+                <!-- Час початку роботи -->
+                <div class="form-group mb-3">
                     <label for="id_start_time" class="form-label">Час початку роботи</label>
                     <input type="time" class="form-control" 
                         id="id_start_time" 
@@ -78,7 +83,8 @@
                     {% endif %}
                 </div>
 
-                <div class="form-group mt-3">
+                <!-- Час завершення роботи -->
+                <div class="form-group mb-3">
                     <label for="id_end_time" class="form-label">Час завершення роботи</label>
                     <input type="time" class="form-control" 
                         id="id_end_time" 
@@ -90,53 +96,42 @@
                     {% endif %}
                 </div>
 
-                <div class="form-group mt-3">
-                    <button class="btn btn-primary" type="submit">
-                        Додати розклад
-                    </button>
-                    <a class="btn btn-primary"
-                        href="{% url 'booking:detail' id=trainer.user.id %}">
-                        Назад
-                    </a>
+                <!-- Кнопки -->
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-warning" type="submit">Додати розклад</button>
+                    <a class="btn btn-secondary" href="{% url 'booking:detail' id=trainer.user.id %}">Назад</a>
                 </div>
             </form>
         </div>
 
-        <div class="col-md-6 bg-white p-4 rounded">
-            <h4>Розклад тренера</h4>
-            <table class="table table-bordered text-center">
-                <thead>
-                    <tr>
-                        {% for day in schedule_days %}
-                            <th>{{ day|date:"D" }}<br>{{ day|date:"d.m" }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        {% for day in schedule_days %}
-                            <td>
-                                {% with schedule_by_day|get_item:day as schedules %}
-                                    {% if schedules %}
-                                        {% for schedule in schedules %}
-                                            <p>{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:'H:i' }}</p>
-                                        {% endfor %}
-
-                                        <a class="btn btn-danger btn-sm" 
-                                            href="{% url 'booking:schedule_remove' id=trainer.user.id date=day|date:'Y-m-d' %} ">
-                                            Видалити
-                                        </a>
-                                    {% else %}
-                                        <p>Не працює</p>
-                                    {% endif %}
-                                {% endwith %}
-                            </td>
-                        {% endfor %}
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <!-- Розклад -->
+      <div class="col-md-6 bg-dark text-light p-4 rounded shadow">
+    <h4 class="text-warning">Розклад тренера</h4>
+    <div class="d-flex flex-wrap gap-3 justify-content-center">
+        {% for day in schedule_days %}
+            <div class="border p-2 rounded text-center bg-secondary text-light" style="width: 120px; flex-shrink: 0;">
+                <strong>{{ day|date:"D" }}</strong>
+                <br>
+                {{ day|date:"d.m" }}
+                <div>
+                    {% with schedule_by_day|get_item:day as schedules %}
+                        {% if schedules %}
+                            {% for schedule in schedules %}
+                                <p>{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:'H:i' }}</p>
+                            {% endfor %}
+                            <a class="btn btn-danger btn-sm mt-2" 
+                                href="{% url 'booking:schedule_remove' id=trainer.user.id date=day|date:'Y-m-d' %}">
+                                Видалити
+                            </a>
+                        {% else %}
+                            <p>Не працює</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        {% endfor %}
     </div>
 </div>
+
 
 {% endblock %}
