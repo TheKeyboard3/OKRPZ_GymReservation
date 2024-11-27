@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static humanize main_tags %}
 
+{% block title %}
+    <title>Тренер {{ trainer.user.get_full_name }} - {{ site_main_title }}</title>
+{% endblock %}
+
 {% block content %}
 
 <div class="row justify-content-center">
@@ -9,34 +13,52 @@
             <div class="row">
                 <!-- Аватар -->
                 <div class="col-md-4 d-flex justify-content-center align-items-center p-3"> 
-                {% if trainer.avatar %}
-                    <img src="{{ trainer.avatar.url }}" 
-                        class="img-fluid rounded-circle border border-warning"
-                         title="{{ trainer.avatar.name|basename }}" 
-                         style="width: 150px; height: 150px; object-fit: cover;">
-                {% else %}
-                    <img src="{% static 'images/baseavatar.jpg' %}" 
-                         class="img-fluid rounded-circle border border-warning" 
-                         alt="Фото" 
-                         style="width: 150px; height: 150px; object-fit: cover;">
-                {% endif %}
-                 
+                    {% if trainer.avatar %}
+                        <img src="{{ trainer.avatar.url }}" 
+                            class="img-fluid border border-warning"
+                            title="{{ trainer.avatar.name|basename }}" 
+                            style="width: 200px; height: 200px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'images/baseavatar.jpg' %}" 
+                            class="img-fluid border border-warning" 
+                            alt="Фото" 
+                            style="width: 200px; height: 200px; object-fit: cover;">
+                    {% endif %}
                 </div>
 
                 <!-- Інформація про тренера -->
                 <div class="col-md-8">
                     <div class="card-body">
-                        <h5 class="card-title text-warning text-uppercase">
-                            {{ trainer.user.get_full_name }}
+                        <h5>
+                            {% if user.id == trainer.user.id %}
+                                (Ваш профіль)
+                            {% endif %}
                         </h5>
+                        <h4 class="text-uppercase">
+                            {{ trainer.user.get_full_name }}
+                        </h4>
 
-                        <div class="bio text-secondary mb-3">
-                            {{ trainer.bio|linebreaks }}
+                        <div class="bio text-white mb-3">
+                            {% if trainer.phone_number %}
+                                <p>Телефон тренера: {{ trainer.phone_number }}</p>
+                            {% endif %}
+                            <p>{{ trainer.bio|linebreaks }}</p>
+
+                            <div class="trainer-departaments">
+                                <h5>Відділення спортзалу в яких працює тренер</h5> | 
+                                {% for departament in trainer.departaments.all %}
+                                    <span class="bg-black">
+                                        {{ departament.title }}
+                                    </span> |
+                                {% empty %}
+                                    Поки цей тренер не працює ні в яких відділеннях
+                                {% endfor %}
+                            </div>
                         </div>
 
                         <!-- Кнопки -->
                         <div class="d-flex flex-wrap gap-2">
-                            {% if user.is_authenticated and user.id == trainer.user.id %}
+                            {% if user.id == trainer.user.id %}
                                 <a href="{% url 'user:trainer_profile_change' %}" 
                                    class="btn btn-warning btn-sm"
                                    title="Редагувати профіль тренера">
@@ -44,21 +66,22 @@
                                 </a>
                             {% endif %}
 
-                            {% if user.is_authenticated and user.client_profile %}
+                            {% if user.client_profile %}
                                 <a href="{% url 'booking:reservation' trainer.user.id %}" 
                                    class="btn btn-dark btn-sm">
                                     Забронювати час <i class="bi bi-calendar4-week"></i>
                                 </a>
                             {% endif %}
 
-                            {% if user.is_superuser %}
+                            {% if user.is_staff %}
                                 <a href="{% url 'booking:shedule_add' trainer.user.id %}" 
-                                   class="btn btn-dark btn-sm">
+                                   class="btn btn-dark btn-sm mr-3"
+                                   title="Змінити або додати розкрал роботи">
                                     Змінити розклад <i class="bi bi-calendar4-week"></i>
                                 </a>
                                 <a href="/{{ admin_path }}/users/trainer/{{ trainer.user.id }}/change/" 
                                    class="btn btn-dark btn-sm"
-                                   title="Панель адміністратора">
+                                   title="Переглянути в панелі адміністратора">
                                     Адмін <i class="bi bi-kanban-fill"></i>
                                 </a>
                             {% endif %}
@@ -70,16 +93,25 @@
     </div>
 
     <!-- Резервації -->
-    {% if user == trainer.user or user.is_staff %}
+    {% if user.is_staff or user == trainer.user %}
         <div class="col-md-10 bg-dark p-4 mt-3 rounded shadow-sm border border-warning">
-            <h4 class="text-warning">Резервації у тренера</h4>
+            <h4 class="text-warning mb-3">
+                {% if user.is_staff %}
+                    Майбутні резервації у цього тренера
+                {% else %}
+                    Майбутні резервації клієнтів у вас
+                {% endif %}
+            </h4>
 
-            {% for reservation in trainer.trainer_reservations.all %}
+            {% for reservation in trainer_reservations %}
                 <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
-                    <div class="text-secondary">
+                    <div class="text-white mt-1 mb-2">
                         <strong>{{ reservation.client.user.get_full_name }}</strong>
+                        <span title="Відділення">({{ reservation.departament.title }}) </span>
                         <span>{{ reservation.start_date|naturalday }}</span>
-                        <span>{{ reservation.start_date|date:'H:i' }} - {{ reservation.end_date|date:'H:i' }}</span>
+                        <span title="К-сть годин: {{ reservation.duration_in_hours }}">
+                            {{ reservation.start_date|date:'H:i' }} - {{ reservation.end_date|date:'H:i' }}
+                        </span>
                     </div>
                 </div>
             {% empty %}

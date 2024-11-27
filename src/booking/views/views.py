@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, render, redirect
@@ -20,7 +21,8 @@ class DeleteReservationView(LoginRequiredMixin, View):
             raise Http404('Ви не можете видалити чужу резервацію')
 
         reservation.delete()
-        messages.success(self.request, 'Резервацію успішно видалено')
+        messages.success(self.request,
+                         f'Резервацію на у {reservation.trainer} на {reservation.start_date.date()} скасовано')
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
@@ -37,10 +39,18 @@ class TrainersListView(View):
 class TrainerDetailView(DetailView):
 
     def get(self, request, id):
-        trainer = get_object_or_404(TrainerProfile, user__id=id)
+        trainer = get_object_or_404(
+            TrainerProfile.objects.select_related(
+                'user').prefetch_related('departaments'),
+            user__id=id
+        )
+        reservations = Reservation.objects.filter(
+            trainer=trainer,
+            start_date__gt=datetime.now()
+        ).select_related('client__user', 'departament')
 
         context = {
-            'title': trainer.user.get_full_name(),
             'trainer': trainer,
+            'trainer_reservations': reservations
         }
         return render(request, 'booking/trainer_detail.html', context)
