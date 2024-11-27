@@ -1,139 +1,83 @@
-{% extends 'base.html' %}
+{% extends 'base_unstyled.html' %}
 {% load static %}
 
 {% block css %}
-<link
-    rel="apple-touch-icon"
-    sizes="180x180"
-    href="{% static 'favicons/apple-touch-icon.jpg' %}"
-/>
-<link
-    rel="icon"
-    type="image/jpg"
-    sizes="32x32"
-    href="{% static 'favicons/favicon-32x32.jpg' %}"
-/>
-<link
-    rel="icon"
-    type="image/jpg"
-    sizes="16x16"
-    href="{% static 'favicons/favicon-16x16.jpg' %}"
-/>
-<link rel="manifest" href="{% static 'favicons/site.webmanifest' %}" />
-<link
-    rel="mask-icon"
-    href="{% static 'favicons/safari-pinned-tab.svg' %}"
-    color="#5bbad5"
-/>
-<meta name="msapplication-TileColor" content="#2b5797" />
-<meta name="theme-color" content="#473a3a" />
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="{% static 'favicons/apple-touch-icon.jpg' %}"
+        />
+        <link
+            rel="icon"
+            type="image/jpg"
+            sizes="32x32"
+            href="{% static 'favicons/favicon-32x32.jpg' %}"
+        />
+        <link
+            rel="icon"
+            type="image/jpg"
+            sizes="16x16"
+            href="{% static 'favicons/favicon-16x16.jpg' %}"
+        />
+        <link rel="manifest" href="{% static 'favicons/site.webmanifest' %}" />
+        <link
+            rel="mask-icon"
+            href="{% static 'favicons/safari-pinned-tab.svg' %}"
+            color="#5bbad5"
+        />
+        <meta name="msapplication-TileColor" content="#2b5797" />
+        <meta name="theme-color" content="#473a3a" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-<link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap"
-    rel="stylesheet"
-/>
-<style>
-    /* Загальні стилі */
-    body, html {
-        margin: 0;
-        padding: 0;
-        font-family: 'Montserrat', sans-serif;
-        background-color: #121212; /* Темний фон */
-        color: #e0e0e0; /* Світлий текст */
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
-
-    .page-wrapper {
-        flex: 1; /* Займає весь доступний простір */
-        display: flex;
-        flex-direction: column;
-    }
-
-    .page-main {
-        flex: 1; /* Контент розтягується */
-    }
-
-    .trainers-cards__container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        justify-content: center;
-        padding: 20px;
-    }
-
-    .trainer {
-        background-color: #1e1e1e; /* Темно-сірий фон для картки */
-        border-radius: 8px;
-        overflow: hidden;
-        text-align: center;
-        width: 280px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .trainer:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
-    }
-
-    .trainer__img {
-        width: 100%;
-        height: 300px;
-        object-fit: cover;
-        background-color: #000; /* Чорний фон, якщо немає зображення */
-    }
-
-    .trainer__name {
-        color: #ffc107; /* Жовтий текст для імені */
-        font-weight: 500;
-        margin: 10px 0;
-    }
-
-    .trainer__show-more {
-        display: inline-block;
-        margin-bottom: 15px;
-        padding: 10px 20px;
-        background-color: #ffc107; /* Жовта кнопка */
-        color: #000;
-        text-decoration: none;
-        border-radius: 5px;
-        font-weight: 500;
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-    .trainer__show-more:hover {
-        background-color: #e0a800;
-        color: #fff;
-    }
-
-    /* Стиль для футера */
-    .page__footer {
-        background-color: #1e1e1e; /* Темний фон футера */
-        color: #e0e0e0;
-        text-align: center;
-        padding: 15px 0;
-        margin-top: auto; /* Зміщує футер донизу */
-    }
-
-    .page__footer p {
-        margin: 0;
-        font-size: 14px;
-    }
-</style>
+        <link rel="stylesheet" href="{% static 'css/index.css' %}" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap"
+            rel="stylesheet"
+        />
 {% endblock %}
 
 {% block title %}
-<title>Наші тренери - {{ site_main_title }}</title>
+    <title>Наші тренери - {{ site_main_title }}</title>
 {% endblock %}
 
 {% block content %}
+
+<header class="page-header">
+    <a href="{% url 'main:index' %}" class="logo">
+        <img
+            src="{% static 'img/logo.png' %}"
+            alt=""
+            class="logo__img"
+            width="200"
+            height="39"
+        />
+    </a>
+</header>
+
 <div class="page-wrapper">
     <main class="page-main">
+    <!--
+        <section class="sorting">
+            <p class="sorting__element sorting__title">СОРТУВАТИ:</p>
+
+            <button
+                class="sorting__element sorting__btn sorting__btn--active"
+                type="button"
+            >
+                ЗА замовчуванням
+            </button>
+
+            <button class="sorting__element sorting__btn" type="button">
+                ЗА ПРІЗВИЩЕМ
+            </button>
+
+            <button class="sorting__element sorting__btn" type="button">
+                ЗА ДОСВІДОМ
+            </button>
+        </section>
+    -->
         <section class="trainers-cards">
             <ul class="trainers-cards__container">
                 {% for trainer in trainers %}
@@ -141,15 +85,122 @@
                     <img {% if trainer.avatar %}
                             src="{{ trainer.avatar.url }}"
                         {% else %}
-                            src="{% static 'images/not_found_image.png' %}" style="background-color: #000;"
+                            src="{% static 'images/not_found_image.png' %}"
                         {% endif %}
-                        alt="{{ trainer.user.get_full_name }}" class="trainer__img">
-                    <h2 class="trainer__name">{{ trainer.user.get_full_name }}</h2>
-                    <a class="trainer__show-more" href="{% url 'booking:detail' trainer.user.id %}">ПОКАЗАТИ</a>
+                        alt="{{ trainer.user.get_full_name }}" class="trainer__img"
+                        height="300"
+                        width="280"
+                        href="{% url 'booking:detail' trainer.id %}">
+                    <h2 class="trainer__name" href="{% url 'booking:detail' trainer.user.id %}">{{ trainer.user.get_full_name }}</h2>
+                    <a class = "trainer__show-more" href="{% url 'booking:detail' trainer.user.id %}">ПОКАЗАТИ</a>
                 </li>
                 {% endfor %}
             </ul>
         </section>
     </main>
+<!--
+    <aside class="sidebar">
+        <form class="sidebar__filters filters">
+            <fieldset class="filters__fieldset">
+                <legend class="filters__legend">НАПРЯМИ</legend>
+
+                <input
+                    class="filters__input"
+                    type="radio"
+                    name="direction"
+                    id="all-direction"
+                    value="all"
+                    checked
+                />
+                <label for="all-direction" class="filters__label"> ВСІ </label>
+
+                <input
+                    class="filters__input"
+                    type="radio"
+                    name="direction"
+                    id="gym"
+                    value="gym"
+                />
+                <label for="gym" class="filters__label"> ТРЕНАЖЕРНИЙ ЗАЛ </label>
+
+                <input
+                    class="filters__input"
+                    type="radio"
+                    name="direction"
+                    id="fight-club"
+                    value="fight club"
+                />
+                <label for="fight-club" class="filters__label">
+                    БІЙЦІВСЬКИЙ КЛУБ
+                </label>
+
+                <input
+                    class="filters__input"
+                    type="radio"
+                    name="direction"
+                    id="kids-club"
+                    value="kids club"
+                />
+                <label for="kids-club" class="filters__label"> ДИТЯЧИЙ КЛУБ </label>
+
+                <input
+                    class="filters__input"
+                    type="radio"
+                    name="direction"
+                    id="swimming-pool"
+                    value="swimming pool"
+                />
+                <label for="swimming-pool" class="filters__label"> БАСЕЙН </label>
+            </fieldset>
+
+            <fieldset class="filters__fieldset">
+                <legend class="filters__legend">КАТЕГОРІЇ</legend>
+
+                <input
+                    class="filters__input"
+                    type="radio"
+                    name="category"
+                    id="all-category"
+                    value="all"
+                    checked
+                />
+                <label for="all-category" class="filters__label"> ВСІ </label>
+
+                <input
+                    class="filters__input"
+                    type="radio"
+                    name="category"
+                    id="master"
+                    value="master"
+                />
+                <label for="master" class="filters__label"> МАЙСТЕР </label>
+
+                <input
+                    class="filters__input"
+                    type="radio"
+                    name="category"
+                    id="specialist"
+                    value="specialist"
+                />
+                <label for="specialist" class="filters__label"> СПЕЦІАЛІСТ </label>
+
+                <input
+                    class="filters__input"
+                    type="radio"
+                    name="category"
+                    id="instructor"
+                    value="instructor"
+                />
+                <label for="instructor" class="filters__label"> ІНСТРУКТОР </label>
+            </fieldset>
+
+            <input type="submit" value="ПОКАЗАТИ" class="filters__submit" />
+        </form>
+    </aside>
+    -->
 </div>
+
+<footer class="page__footer">
+    <p class="copyright">&copy; {{ current_year }} - {{ site_main_title }}</p>
+</footer>
 {% endblock %}
