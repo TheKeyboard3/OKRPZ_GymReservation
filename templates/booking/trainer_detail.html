@@ -9,10 +9,10 @@
             <div class="row">
                 <!-- Аватар -->
                 <div class="col-md-4 d-flex justify-content-center align-items-center p-3"> 
-                    {% if user.trainer_profile.avatar %}
-                    <img src="{{ user.trainer_profile.avatar.url }}" 
+                {% if trainer.avatar %}
+                    <img src="{{ trainer.avatar.url }}" 
                         class="img-fluid rounded-circle border border-warning"
-                         title="{{ user.trainer_profile.avatar.name|basename }}" 
+                         title="{{ trainer.avatar.name|basename }}" 
                          style="width: 150px; height: 150px; object-fit: cover;">
                 {% else %}
                     <img src="{% static 'images/baseavatar.jpg' %}" 
